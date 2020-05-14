@@ -1,6 +1,4 @@
-﻿using System;
-using NLog.Common;
-using SimpleGame.GraphicEngine;
+﻿using SimpleGame.GraphicEngine;
 
 namespace SimpleGame
 {
