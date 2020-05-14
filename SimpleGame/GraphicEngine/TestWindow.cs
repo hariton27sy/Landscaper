@@ -4,6 +4,7 @@ using OpenTK;
 using OpenTK.Input;
 using SimpleGame.GameCore.GameModels;
 using SimpleGame.GraphicEngine.Shaders;
+using OpenTK.Graphics.OpenGL;
 
 namespace SimpleGame.GraphicEngine
 {
@@ -79,6 +80,7 @@ namespace SimpleGame.GraphicEngine
 
         private void OnLoad(object sender, EventArgs e)
         {
+            Console.WriteLine(GL.GetString(StringName.Version));
             loader = new Loader();
             modelsStorage = new ModelsStorage(loader, "textures");
             entity = new Entity(modelsStorage[0], new Vector3(0, 0, 0));
