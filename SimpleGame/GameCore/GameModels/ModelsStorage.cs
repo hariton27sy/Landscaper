@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.Intrinsics.X86;
-using System.Runtime.Serialization;
 using SimpleGame.GraphicEngine;
 using SimpleGame.GraphicEngine.Models;
 using SimpleGame.GraphicEngine.Models.Templates;
@@ -35,24 +31,26 @@ namespace SimpleGame.GameCore.GameModels
 
         private void LoadModels()
         {
-            using var f = new FileInfo(Path.Combine(directory, ".conf")).OpenText();
-            var filesCount = int.Parse(f.ReadLine());
-            for (var i = 0; i < filesCount; i++)
+            using (var f = new FileInfo(Path.Combine(directory, ".conf")).OpenText())
             {
-                LoadTexture(f.ReadLine());
-            }
-
-            var modelsCount = int.Parse(f.ReadLine());
-            for (var i = 0; i < modelsCount; i++)
-            {
-                var info = f.ReadLine();
-                var stateCount = int.Parse(info.Split()[0]);
-                var states = new string[stateCount];
-                for (var j = 0; j < stateCount; j++)
+                var filesCount = int.Parse(f.ReadLine());
+                for (var i = 0; i < filesCount; i++)
                 {
-                    states[j] = f.ReadLine();
+                    LoadTexture(f.ReadLine());
                 }
-                LoadModel(info, states);
+
+                var modelsCount = int.Parse(f.ReadLine());
+                for (var i = 0; i < modelsCount; i++)
+                {
+                    var info = f.ReadLine();
+                    var stateCount = int.Parse(info.Split()[0]);
+                    var states = new string[stateCount];
+                    for (var j = 0; j < stateCount; j++)
+                    {
+                        states[j] = f.ReadLine();
+                    }
+                    LoadModel(info, states);
+                }
             }
         }
 
