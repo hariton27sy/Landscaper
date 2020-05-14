@@ -1,11 +1,11 @@
-#version 410 core
+#version 120
 
-in vec3 position;
-in vec3 in_color;
-in vec2 tex_coords;
+attribute vec3 position;
+attribute vec3 in_color;
+attribute vec2 tex_coords;
 
-out vec3 color;
-out vec2 texturePosition;
+varying vec3 color;
+varying vec2 texturePosition;
 
 uniform mat4 transformationMatrix;
 uniform mat4 projectionMatrix;

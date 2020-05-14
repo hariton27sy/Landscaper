@@ -51,6 +51,7 @@ namespace SimpleGame.GraphicEngine.Shaders
             AttachShaders();
             BindAttributes();
             GL.LinkProgram(ProgramId);
+            Console.Error.WriteLine($"Linking program. Errors:\n{GL.GetProgramInfoLog(ProgramId)}");
             DeleteShaders();
             BindUniformVariables();
         }
