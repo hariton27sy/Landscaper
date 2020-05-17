@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Linq;
 using OpenTK.Graphics.OpenGL;
 using SimpleGame.GraphicEngine.Models;
 using SimpleGame.GraphicEngine.Models.Templates;
