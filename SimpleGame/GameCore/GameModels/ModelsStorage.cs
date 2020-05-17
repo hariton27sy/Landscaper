@@ -14,6 +14,8 @@ namespace SimpleGame.GameCore.GameModels
         private Dictionary<int, Texture> textures = new Dictionary<int, Texture>();
         private Loader loader;
 
+        public readonly Dictionary<int, string> IdToName;
+        public readonly Dictionary<string, int> NameToId;
 
         public GameModel this[int id] => models[id];
 
@@ -25,6 +27,8 @@ namespace SimpleGame.GameCore.GameModels
         public ModelsStorage(Loader graphicLoader, string directory)
         {
             this.directory = directory;
+            IdToName = new Dictionary<int, string>();
+            NameToId = new Dictionary<string, int>();
             this.loader = graphicLoader;
             LoadModels();
         }
@@ -71,6 +75,9 @@ namespace SimpleGame.GameCore.GameModels
             var splitted = info.Split();
             var id = int.Parse(splitted[1]);
             var name = splitted[2];
+            IdToName.Add(id, name);
+            NameToId.Add(name, id);
+            
             var _states = states.Select(ParseState).ToArray();
             models.Add(id, new GameModel(id, name, _states.ToArray()));
         }

@@ -8,7 +8,7 @@ namespace SimpleGame.GraphicEngine.Models
     {
         protected Model(int vaoId, int verticesCount, BeginMode drawingMode)
         {
-            VaoId = vaoId;
+            VaoId = vaoId+1;
             DrawingMode = drawingMode;
             VerticesCount = verticesCount;
         }

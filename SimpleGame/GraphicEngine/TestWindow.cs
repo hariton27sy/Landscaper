@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using OpenTK;
 using OpenTK.Input;
 using SimpleGame.GameCore.GameModels;
 using SimpleGame.GraphicEngine.Shaders;
 using OpenTK.Graphics.OpenGL;
+using SimpleGame.GameCore;
 
 namespace SimpleGame.GraphicEngine
 {
@@ -17,9 +20,10 @@ namespace SimpleGame.GraphicEngine
         private bool isMouseFixed;
         private MouseState previousState;
 
-        private Entity entity;
-        private Entity entity2;
+        private List<Entity> entities;
         private ModelsStorage modelsStorage;
+
+        private readonly Game game;
 
         public TestWindow()
         {
@@ -29,10 +33,18 @@ namespace SimpleGame.GraphicEngine
             VSync = VSyncMode.On;
         }
 
+        public TestWindow(Game game) : this()
+        {
+            this.game = game;
+            
+        }
+
         private void OnKeyPress(object sender, KeyPressEventArgs e)
         {
             const float sensitivity = 0.1f;
             Vector3 delta = Vector3.Zero;
+            
+            // todo to Key.Q...
             switch (e.KeyChar)
             {
                 case 'q': camera.Yaw -= 1f;
@@ -57,7 +69,7 @@ namespace SimpleGame.GraphicEngine
                     previousState = Mouse.GetState();
                     break;
                 default:
-                    Console.WriteLine(e.KeyChar);
+                    Console.WriteLine($"Unknown char '{e.KeyChar}'");
                     break;
             }
             if (delta != Vector3.Zero)
@@ -67,14 +79,26 @@ namespace SimpleGame.GraphicEngine
 
         private void OnUpdateFrame(object sender, FrameEventArgs e)
         {
+            entities.Clear();
+            foreach (var tuple in game.GetEntitiesToRender())
+            {
+                var mapEntity = tuple.Item1;
+                var location = tuple.Item2;
+                var textureId = modelsStorage.NameToId[mapEntity.TextureName];
+                var entity = new Entity(modelsStorage[textureId], location);
+                entities.Add(entity);
+            }
             CheckMouse();
         }
 
         private void OnRenderFrame(object sender, FrameEventArgs e)
         {
             renderer.Clear(Color.Aqua);
-            renderer.Render(entity);
-            renderer.Render(entity2);
+
+            foreach (var entity in entities)
+            {
+                renderer.Render(entity);
+            }
             SwapBuffers();
         }
 
@@ -83,8 +107,7 @@ namespace SimpleGame.GraphicEngine
             Console.WriteLine(GL.GetString(StringName.Version));
             loader = new Loader();
             modelsStorage = new ModelsStorage(loader, "textures");
-            entity = new Entity(modelsStorage[0], new Vector3(0, 0, 0));
-            entity2 = new Entity(modelsStorage[2], new Vector3(1, 0, 0), scale:0.5f);
+            entities = new List<Entity>();
             camera = new Camera();
             renderer = new Renderer(camera, new StaticShader(), (float)Width / Height);
             

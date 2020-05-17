@@ -1,4 +1,7 @@
-﻿using SimpleGame.GraphicEngine;
+﻿using SimpleGame.GameCore;
+using SimpleGame.GameCore.Map;
+using SimpleGame.GameCore.Map.Worlds;
+using SimpleGame.GraphicEngine;
 
 namespace SimpleGame
 {
@@ -6,7 +9,9 @@ namespace SimpleGame
     {
         static void Main(string[] args)
         {
-            var window = new TestWindow();
+            var map = new OverWorld();
+            var game = new Game(map);
+            var window = new TestWindow(game);
             window.Run();
         }
     }
