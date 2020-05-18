@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using OpenTK.Graphics.OpenGL;
 using SimpleGame.GraphicEngine.Models;
 using SimpleGame.GraphicEngine.Models.Templates;
+using Environment = System.Environment;
 using PixelFormat = OpenTK.Graphics.OpenGL.PixelFormat;
 
 namespace SimpleGame.GraphicEngine
@@ -17,8 +19,19 @@ namespace SimpleGame.GraphicEngine
         public TexturedModel TestTexture { get; }
         public TexturedModel TestTexture2 { get; }
 
+        private readonly Func<int> vertexArrayGenerator = GL.GenVertexArray;
+        private readonly Action<int> vertexArrayBinder = GL.BindVertexArray;
+        private readonly Action<int[]> vertexArrayRemover = x => GL.DeleteVertexArrays(x.Length, x);
+
         public Loader()
         {
+            if (Environment.OSVersion.Platform == PlatformID.MacOSX)
+            {
+                vertexArrayGenerator = GL.Apple.GenVertexArray;
+                vertexArrayBinder = GL.Apple.BindVertexArray;
+                vertexArrayRemover = x => GL.Apple.DeleteVertexArrays(x.Length, x);
+            }
+
             float[] colors =
             {
                 //front
@@ -159,7 +172,7 @@ namespace SimpleGame.GraphicEngine
 
         public void Dispose()
         {
-            GL.DeleteVertexArrays(vaos.Count, vaos.ToArray());
+            vertexArrayRemover(vaos.ToArray());
             GL.DeleteBuffers(vbos.Count, vbos.ToArray());
             GL.DeleteTextures(textures.Count, textures.ToArray());
         }
@@ -189,9 +202,9 @@ namespace SimpleGame.GraphicEngine
         /// <returns>VAO ID</returns>
         private int LoadBaseModel(float[] vertices, int[] indices)
         {
-            var vao = GL.GenVertexArray();
+            var vao = vertexArrayGenerator();
             vaos.Add(vao);
-            GL.BindVertexArray(vao);
+            vertexArrayBinder(vao);
             LoadIndices(indices);
             LoadDataToVbo(0, 3, vertices);
 

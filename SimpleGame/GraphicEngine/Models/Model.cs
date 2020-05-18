@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Security.Cryptography.X509Certificates;
 using OpenTK.Graphics.OpenGL;
 
 namespace SimpleGame.GraphicEngine.Models
@@ -8,7 +7,7 @@ namespace SimpleGame.GraphicEngine.Models
     {
         protected Model(int vaoId, int verticesCount, BeginMode drawingMode)
         {
-            VaoId = vaoId+1;
+            VaoId = vaoId;
             DrawingMode = drawingMode;
             VerticesCount = verticesCount;
         }
