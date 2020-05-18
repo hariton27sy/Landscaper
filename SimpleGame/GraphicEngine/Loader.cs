@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 using OpenTK.Graphics.OpenGL;
 using SimpleGame.GraphicEngine.Models;
 using SimpleGame.GraphicEngine.Models.Templates;
-using Environment = System.Environment;
 using PixelFormat = OpenTK.Graphics.OpenGL.PixelFormat;
 
 namespace SimpleGame.GraphicEngine
@@ -25,7 +25,7 @@ namespace SimpleGame.GraphicEngine
 
         public Loader()
         {
-            if (Environment.OSVersion.Platform == PlatformID.MacOSX)
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
                 vertexArrayGenerator = GL.Apple.GenVertexArray;
                 vertexArrayBinder = GL.Apple.BindVertexArray;

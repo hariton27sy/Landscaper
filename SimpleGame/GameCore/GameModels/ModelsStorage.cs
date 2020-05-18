@@ -29,7 +29,7 @@ namespace SimpleGame.GameCore.GameModels
             this.directory = directory;
             IdToName = new Dictionary<int, string>();
             NameToId = new Dictionary<string, int>();
-            this.loader = graphicLoader;
+            loader = graphicLoader;
             LoadModels();
         }
 
