@@ -1,4 +1,5 @@
-﻿using OpenTK.Graphics.OpenGL;
+﻿using System.Runtime.InteropServices;
+using OpenTK.Graphics.OpenGL;
 
 namespace SimpleGame.GraphicEngine.Models
 {
@@ -24,7 +25,14 @@ namespace SimpleGame.GraphicEngine.Models
 
         public override Model Start()
         {
-            GL.BindVertexArray(VaoId);
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                GL.Apple.BindVertexArray(VaoId);
+            }
+            else
+            {
+                GL.BindVertexArray(VaoId);
+            }
             GL.EnableVertexAttribArray(0);
             GL.EnableVertexAttribArray(2);
             GL.BindTexture(TextureTarget.Texture2D, TextureId);
