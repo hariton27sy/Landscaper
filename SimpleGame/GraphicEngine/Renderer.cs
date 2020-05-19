@@ -1,7 +1,5 @@
 ﻿using System.Drawing;
-using System.Runtime.InteropServices;
 using OpenTK;
-using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using SimpleGame.GraphicEngine.Shaders;
 
@@ -21,11 +19,11 @@ namespace SimpleGame.GraphicEngine
             }
         }
 
-        private Camera camera;
+        private ICamera camera;
         private StaticShader shader;
 
 
-        public Renderer(Camera camera, StaticShader shader, float aspect)
+        public Renderer(ICamera camera, StaticShader shader, float aspect)
         {
             this.camera = camera;
             this.shader = shader;

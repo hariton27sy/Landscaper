@@ -4,7 +4,7 @@ using Vector3 = OpenTK.Vector3;
 
 namespace SimpleGame.GraphicEngine
 {
-    public class Camera
+    public class Camera : ICamera
     {
 
         /// <summary>

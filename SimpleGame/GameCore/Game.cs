@@ -2,7 +2,6 @@
 using System.Linq;
 using OpenTK;
 using SimpleGame.GameCore.Map;
-using SimpleGame.GraphicEngine;
 
 namespace SimpleGame.GameCore
 {
