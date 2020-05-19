@@ -19,6 +19,8 @@ namespace SimpleGame.GameCore.GameModels
 
         public GameModel this[int id] => models[id];
 
+        public bool Contains(int id) => models.ContainsKey(id);
+
         public void AddModel(GameModel model)
         {
             models.Add(model.Id, model);

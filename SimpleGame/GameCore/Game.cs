@@ -1,27 +1,38 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using OpenTK;
+using OpenTK.Input;
+using SimpleGame.GameCore.GameModels;
 using SimpleGame.GameCore.Map;
+using SimpleGame.GameCore.Worlds;
+using SimpleGame.GraphicEngine;
 
 namespace SimpleGame.GameCore
 {
     public class Game
     {
-        private readonly World world;
-        public Game(World world)
+        private ModelsStorage storage;
+        public readonly IWorld World;
+        private Player player;
+
+        public Game(IWorld world)
         {
-            this.world = world;
+            World = world;
         }
 
-        public IEnumerable<(MapEntity, Vector3)> GetEntitiesToRender()
+        public void OnKeyDown(object sender, KeyboardKeyEventArgs args)
         {
-            foreach (var chunk in world.chunks.Select(pair => pair.Value))
-            {
-                foreach (var pair in chunk.GetEntitiesToRender())
-                {
-                    yield return pair;
-                }
-            }
+            
+        }
+
+        public void OnKeyUp(object sender, KeyboardKeyEventArgs args)
+        {
+            
+        }
+
+        public void OnMouse(MouseArgs args)
+        {
+            
         }
     }
 }

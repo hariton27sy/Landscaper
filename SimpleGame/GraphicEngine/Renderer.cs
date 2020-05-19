@@ -37,7 +37,7 @@ namespace SimpleGame.GraphicEngine
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
         }
 
-        public void Render(params Entity[] entities)
+        public void Render(params IEntity[] entities)
         {
             using (shader.Start())
             {
