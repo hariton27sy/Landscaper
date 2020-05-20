@@ -76,7 +76,6 @@ namespace SimpleGame.GraphicEngine
             var deltaX = mouseState.X - game.previousState.X;
             var deltaY = mouseState.Y - game.previousState.Y;
             game.previousState = mouseState;
-            Console.WriteLine($"{deltaX} {deltaY}");
             if (!game.isMouseFixed)
                 return;
             game.OnMouse(

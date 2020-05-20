@@ -15,6 +15,7 @@ namespace SimpleGame.GraphicEngine.Models.Templates
 
         public static readonly ModelTemplate Cube = new ModelTemplate(new[]
         {
+            //front
             -0.5f, -0.5f, 0.5f,
             0.5f, -0.5f, 0.5f,
             0.5f, 0.5f, 0.5f,
