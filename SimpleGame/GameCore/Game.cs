@@ -24,40 +24,38 @@ namespace SimpleGame.GameCore
 
         public void OnKeyDown(object sender, KeyboardKeyEventArgs args)
         {
-            const float sensitivity = 0.1f;
             Vector3 delta = Vector3.Zero;
-            
-            // todo to Key.Q...
-            switch (e.KeyChar)
+            switch (args.Key)
             {
-                case 'q': camera.Yaw -= 1f;
+                case Key.Left:
+                case Key.A:
+                    delta -= Vector3.UnitZ * Preferences.Sensitivity;
                     break;
-                case 'e': camera.Yaw += 1f;
+                case Key.Right:
+                case Key.D:
+                    delta += Vector3.UnitZ * Preferences.Sensitivity;
                     break;
-                case 'w': delta += Vector3.UnitX * sensitivity;
+                case Key.Up:
+                case Key.W:
+                    delta += Vector3.UnitX * Preferences.Sensitivity;
                     break;
-                case 'a':
-                    delta -= Vector3.UnitZ * sensitivity;
+                case Key.Down:
+                case Key.S:
+                    delta -= Vector3.UnitX * Preferences.Sensitivity;
                     break;
-                case 's':
-                    delta -= Vector3.UnitX * sensitivity;
-                    break;
-                case 'd':
-                    delta += Vector3.UnitZ * sensitivity;
-                    break;
-                case 'p':
+                case Key.P:
                     //Fix mouse pointer
-                    CursorVisible = isMouseFixed;
-                    isMouseFixed = !isMouseFixed;
-                    previousState = Mouse.GetState();
+                    // CursorVisible = isMouseFixed;
+                    // isMouseFixed = !isMouseFixed;
+                    // previousState = Mouse.GetState();
                     break;
                 default:
-                    Console.WriteLine($"Unknown char '{e.KeyChar}'");
+                    Console.WriteLine($"Unknown char '{args.Key}'");
                     break;
             }
             if (delta != Vector3.Zero)
                 Console.WriteLine(delta);
-            camera.MoveLocalByDelta(delta);
+            Player.MoveLocalByDelta(delta);
         }
 
         public void OnKeyUp(object sender, KeyboardKeyEventArgs args)
