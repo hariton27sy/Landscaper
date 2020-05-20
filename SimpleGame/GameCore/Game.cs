@@ -24,7 +24,40 @@ namespace SimpleGame.GameCore
 
         public void OnKeyDown(object sender, KeyboardKeyEventArgs args)
         {
+            const float sensitivity = 0.1f;
+            Vector3 delta = Vector3.Zero;
             
+            // todo to Key.Q...
+            switch (e.KeyChar)
+            {
+                case 'q': camera.Yaw -= 1f;
+                    break;
+                case 'e': camera.Yaw += 1f;
+                    break;
+                case 'w': delta += Vector3.UnitX * sensitivity;
+                    break;
+                case 'a':
+                    delta -= Vector3.UnitZ * sensitivity;
+                    break;
+                case 's':
+                    delta -= Vector3.UnitX * sensitivity;
+                    break;
+                case 'd':
+                    delta += Vector3.UnitZ * sensitivity;
+                    break;
+                case 'p':
+                    //Fix mouse pointer
+                    CursorVisible = isMouseFixed;
+                    isMouseFixed = !isMouseFixed;
+                    previousState = Mouse.GetState();
+                    break;
+                default:
+                    Console.WriteLine($"Unknown char '{e.KeyChar}'");
+                    break;
+            }
+            if (delta != Vector3.Zero)
+                Console.WriteLine(delta);
+            camera.MoveLocalByDelta(delta);
         }
 
         public void OnKeyUp(object sender, KeyboardKeyEventArgs args)
@@ -35,7 +68,14 @@ namespace SimpleGame.GameCore
 
         public void OnMouse(MouseArgs args, double x, double y)
         {
-
+            Player.Pitch -= args.DeltaY * Preferences.Sensibility;
+            Player.Yaw += args.DeltaX * Preferences.Sensibility;
+            Mouse.SetPosition(x, y);
+            var delta = Vector3.Zero;
+            delta += Vector3.UnitX * 2;
+            if (delta != Vector3.Zero)
+                Console.WriteLine(delta);
+            Player.MoveLocalByDelta(delta);
         }
 
         private Vector2 WorldToChunkPosition(Vector2 worldPosition)
