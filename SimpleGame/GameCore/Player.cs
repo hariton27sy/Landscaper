@@ -8,7 +8,9 @@ namespace SimpleGame.GameCore
         public Player(Vector3 position = new Vector3())
         {
             CanMoveUpAndDown = false;
-            Position = position;
+            Position = new Vector3(-5, 10, 0);
+            Pitch = -40;
+            Yaw = 0;
         }
     }
 }

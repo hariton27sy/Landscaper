@@ -58,9 +58,9 @@ namespace SimpleGame.GraphicEngine
             loader = new Loader();
             modelsStorage = new ModelsStorage(loader, "textures");
             
-            camera = new Player();
-            var world = new TestWorld(modelsStorage);
-            game = new Game(world);
+            var world = new OverWorld(modelsStorage);
+            game = new Game(world, new Player());
+            camera = game.Player;
             renderer = new Renderer(camera, new StaticShader(), (float)Width / Height);
 
             KeyDown += game.OnKeyDown;
@@ -75,9 +75,12 @@ namespace SimpleGame.GraphicEngine
             previousState = mouseState;
             if (!isMouseFixed)
                 return;
-
-            game.OnMouse(new MouseArgs(deltaX, deltaY, mouseState.LeftButton == ButtonState.Pressed, 
-                mouseState.RightButton == ButtonState.Pressed));
+            game.OnMouse(
+                new MouseArgs(
+                    deltaX, deltaY, 
+                    mouseState.LeftButton == ButtonState.Pressed, 
+                    mouseState.RightButton == ButtonState.Pressed), 
+                X + Width / 2f, Y + Height / 2f);
         }
     }
 }

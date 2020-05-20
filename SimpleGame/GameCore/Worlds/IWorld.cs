@@ -9,5 +9,6 @@ namespace SimpleGame.GameCore.Worlds
     {
         Chunk GetChunk(Vector2 chunkPosition);
         void OnCLose();
+        IEnumerable<Chunk> GetChunksInRadius(Vector2 anchor, int chunkRenderRadius);
     }
 }
