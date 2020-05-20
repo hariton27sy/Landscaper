@@ -31,6 +31,7 @@ namespace SimpleGame.GraphicEngine
             UpdateFrame += OnUpdateFrame;
             RenderFrame += OnRenderFrame;
             VSync = VSyncMode.On;
+            Title = "Minecraft";
         }
 
         public TestWindow(Game game) : this()
@@ -68,12 +69,15 @@ namespace SimpleGame.GraphicEngine
         }
 
         private void CheckMouse()
-        {
+        {                    
+            CursorVisible = !game.isMouseFixed;
+            
             var mouseState = Mouse.GetState();
-            var deltaX = mouseState.X - previousState.X;
-            var deltaY = mouseState.Y - previousState.Y;
-            previousState = mouseState;
-            if (!isMouseFixed)
+            var deltaX = mouseState.X - game.previousState.X;
+            var deltaY = mouseState.Y - game.previousState.Y;
+            game.previousState = mouseState;
+            Console.WriteLine($"{deltaX} {deltaY}");
+            if (!game.isMouseFixed)
                 return;
             game.OnMouse(
                 new MouseArgs(

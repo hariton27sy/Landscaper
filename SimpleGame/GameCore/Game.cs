@@ -15,6 +15,9 @@ namespace SimpleGame.GameCore
         private ModelsStorage storage;
         public readonly IWorld World;
         public readonly Player Player;
+        
+        public bool isMouseFixed;
+        public MouseState previousState;
 
         public Game(IWorld world, Player player)
         {
@@ -43,11 +46,13 @@ namespace SimpleGame.GameCore
                 case Key.S:
                     delta -= Vector3.UnitX * Preferences.Sensitivity;
                     break;
+                case Key.ControlLeft:
+                case Key.ControlRight:
+                    Player.MoveLocalByDelta(new Vector3(0,-0.1f,0));
+                    break;
                 case Key.P:
-                    //Fix mouse pointer
-                    // CursorVisible = isMouseFixed;
-                    // isMouseFixed = !isMouseFixed;
-                    // previousState = Mouse.GetState();
+                    isMouseFixed = !isMouseFixed;
+                    previousState = Mouse.GetState();
                     break;
                 default:
                     Console.WriteLine($"Unknown char '{args.Key}'");
@@ -60,8 +65,14 @@ namespace SimpleGame.GameCore
 
         public void OnKeyUp(object sender, KeyboardKeyEventArgs args)
         {
-            
-            
+            switch (args.Key)
+            {
+                case Key.ControlLeft:
+                case Key.ControlRight:
+                    Player.MoveLocalByDelta(new Vector3(0, 0.1f, 0));
+                    break;
+            }
+
         }
 
         public void OnMouse(MouseArgs args, double x, double y)
@@ -69,11 +80,6 @@ namespace SimpleGame.GameCore
             Player.Pitch -= args.DeltaY * Preferences.Sensibility;
             Player.Yaw += args.DeltaX * Preferences.Sensibility;
             Mouse.SetPosition(x, y);
-            var delta = Vector3.Zero;
-            delta += Vector3.UnitX * 2;
-            if (delta != Vector3.Zero)
-                Console.WriteLine(delta);
-            Player.MoveLocalByDelta(delta);
         }
 
         private Vector2 WorldToChunkPosition(Vector2 worldPosition)
