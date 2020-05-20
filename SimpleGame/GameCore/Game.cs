@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using OpenTK;
 using OpenTK.Input;
 using SimpleGame.GameCore.GameModels;
-using SimpleGame.GameCore.Map;
 using SimpleGame.GameCore.Worlds;
 using SimpleGame.GraphicEngine;
 
@@ -15,14 +13,24 @@ namespace SimpleGame.GameCore
         private ModelsStorage storage;
         public readonly IWorld World;
         public readonly Player Player;
-        
-        public bool isMouseFixed;
-        public MouseState previousState;
+
+        private DateTime previousTime;
+
+        public bool IsMouseFixed { get; private set; }
 
         public Game(IWorld world, Player player)
         {
             World = world;
-            this.Player = player;
+            Player = player;
+            previousTime = DateTime.Now;
+        }
+
+        public void UpdateState()
+        {
+            var currTime = DateTime.Now;
+            var delta = currTime - previousTime;
+            previousTime = currTime;
+            Player.Position += Player.AbsoluteVelocity * (float) delta.TotalSeconds;
         }
 
         public void OnKeyDown(object sender, KeyboardKeyEventArgs args)
@@ -32,54 +40,68 @@ namespace SimpleGame.GameCore
             {
                 case Key.Left:
                 case Key.A:
-                    delta -= Vector3.UnitZ * Preferences.Sensitivity;
+                    Player.Velocity -= Vector3.UnitZ;
                     break;
                 case Key.Right:
                 case Key.D:
-                    delta += Vector3.UnitZ * Preferences.Sensitivity;
+                    Player.Velocity += Vector3.UnitZ;
                     break;
                 case Key.Up:
                 case Key.W:
-                    delta += Vector3.UnitX * Preferences.Sensitivity;
+                    Player.Velocity += Vector3.UnitX;
                     break;
                 case Key.Down:
                 case Key.S:
-                    delta -= Vector3.UnitX * Preferences.Sensitivity;
+                    Player.Velocity -= Vector3.UnitX;
                     break;
                 case Key.ControlLeft:
                 case Key.ControlRight:
                     Player.MoveLocalByDelta(new Vector3(0,-0.1f,0));
                     break;
                 case Key.P:
-                    isMouseFixed = !isMouseFixed;
-                    previousState = Mouse.GetState();
+                    IsMouseFixed = !IsMouseFixed;
                     break;
                 default:
                     Console.WriteLine($"Unknown char '{args.Key}'");
                     break;
             }
-            if (delta != Vector3.Zero)
-                Console.WriteLine(delta);
-            Player.MoveLocalByDelta(delta);
         }
 
         public void OnKeyUp(object sender, KeyboardKeyEventArgs args)
         {
             switch (args.Key)
             {
+                case Key.Left:
+                case Key.A:
+                    Player.Velocity = new Vector3(Player.Velocity.X, Player.Velocity.Y, 0);
+                    break;
+                case Key.Right:
+                case Key.D:
+                    Player.Velocity = new Vector3(Player.Velocity.X, Player.Velocity.Y, 0);
+                    break;
+                case Key.Up:
+                case Key.W:
+                    Player.Velocity = new Vector3(0, Player.Velocity.Y, Player.Velocity.Z);
+                    break;
+                case Key.Down:
+                case Key.S:
+                    Player.Velocity = new Vector3(0, Player.Velocity.Y, Player.Velocity.Z);
+                    break;
                 case Key.ControlLeft:
                 case Key.ControlRight:
-                    Player.MoveLocalByDelta(new Vector3(0, 0.1f, 0));
+                    Player.MoveLocalByDelta(new Vector3(0, -0.1f, 0));
                     break;
             }
 
         }
 
-        public void OnMouse(MouseArgs args, double x, double y)
+        public void OnMouse(MouseArgs args)
         {
-            Player.Pitch -= args.DeltaY * Preferences.Sensibility;
-            Player.Yaw += args.DeltaX * Preferences.Sensibility;
-            Mouse.SetPosition(x, y);
+            if (IsMouseFixed)
+            {
+                Player.Pitch -= args.DeltaY * Preferences.Sensibility;
+                Player.Yaw += args.DeltaX * Preferences.Sensibility;
+            }
         }
 
         private Vector2 WorldToChunkPosition(Vector2 worldPosition)

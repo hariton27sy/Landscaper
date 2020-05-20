@@ -18,7 +18,6 @@ namespace SimpleGame.GraphicEngine
         private Renderer renderer;
         private Camera camera;
 
-        private bool isMouseFixed;
         private MouseState previousState;
 
         private ModelsStorage modelsStorage;
@@ -42,6 +41,7 @@ namespace SimpleGame.GraphicEngine
         private void OnUpdateFrame(object sender, FrameEventArgs e)
         {
             CheckMouse();
+            game.UpdateState();
         }
 
         private void OnRenderFrame(object sender, FrameEventArgs e)
@@ -70,20 +70,19 @@ namespace SimpleGame.GraphicEngine
 
         private void CheckMouse()
         {                    
-            CursorVisible = !game.isMouseFixed;
+            CursorVisible = !game.IsMouseFixed;
             
             var mouseState = Mouse.GetState();
-            var deltaX = mouseState.X - game.previousState.X;
-            var deltaY = mouseState.Y - game.previousState.Y;
-            game.previousState = mouseState;
-            if (!game.isMouseFixed)
-                return;
+            var deltaX = mouseState.X - previousState.X;
+            var deltaY = mouseState.Y - previousState.Y;
+            previousState = mouseState;
             game.OnMouse(
                 new MouseArgs(
                     deltaX, deltaY, 
                     mouseState.LeftButton == ButtonState.Pressed, 
-                    mouseState.RightButton == ButtonState.Pressed), 
-                X + Width / 2f, Y + Height / 2f);
+                    mouseState.RightButton == ButtonState.Pressed));
+            if (game.IsMouseFixed)
+                Mouse.SetPosition(X + Width / 2, Y + Height / 2);
         }
     }
 }
