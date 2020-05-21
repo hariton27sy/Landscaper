@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Linq;
 using OpenTK;
 using OpenTK.Input;
@@ -136,7 +137,9 @@ namespace SimpleGame
         private void OnRender(object sender, FrameEventArgs args)
         {
             var anchor = WorldToChunkPosition(Player.Position);
+            renderer.Clear(Color.Aqua);
             renderer.Render(Player, textures, World.GetChunksInRadius(anchor, Preferences.ChunkRenderRadius));
+            SwapBuffers();
         }
     }
 }

@@ -41,13 +41,7 @@ namespace SimpleGame.GameCore.Persons
             Yaw = yaw;
         }
 
-        public Matrix4 ViewMatrix
-        {
-            get
-            {
-                return Matrix4.LookAt(Position, Position + Direction, Vector3.UnitY);
-            }
-        }
+        public Matrix4 ViewMatrix => Matrix4.LookAt(Position, Position + Direction, Vector3.UnitY);
 
         public Vector3 Direction
         {
