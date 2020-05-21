@@ -1,7 +1,7 @@
 ﻿using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
-namespace SimpleGame.GraphicEngine.Shaders
+namespace SimpleGame.Graphic.Shaders
 {
     public class StaticShader : Shader
     {

@@ -1,9 +1,9 @@
 ﻿using System.Drawing;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
-using SimpleGame.GraphicEngine.Shaders;
+using SimpleGame.Graphic.Shaders;
 
-namespace SimpleGame.GraphicEngine
+namespace SimpleGame.Graphic
 {
     public class Renderer
     {
@@ -19,15 +19,18 @@ namespace SimpleGame.GraphicEngine
             }
         }
 
-        private ICamera camera;
-        private StaticShader shader;
-
-
-        public Renderer(ICamera camera, StaticShader shader, float aspect)
+        public float Aspect
         {
-            this.camera = camera;
+            set =>
+                ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(70), 
+                    value, 0.01f, 1000);
+        }
+
+        private readonly StaticShader shader;
+
+        public Renderer(StaticShader shader)
+        {
             this.shader = shader;
-            ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(70), aspect, 0.01f, 1000);
             GL.Enable(EnableCap.DepthTest);
         }
 
@@ -37,7 +40,7 @@ namespace SimpleGame.GraphicEngine
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
         }
 
-        public void Render(params IEntity[] entities)
+        public void Render(ICamera camera, params IEntity[] entities)
         {
             using (shader.Start())
             {
@@ -48,7 +51,8 @@ namespace SimpleGame.GraphicEngine
                         shader.IsTextured = entity.Model.IsTextured;
                         shader.TransformationMatrix = entity.TransformMatrix;
                         shader.ViewMatrix = camera.ViewMatrix;
-                        GL.DrawElements(entity.Model.DrawingMode, entity.Model.VerticesCount, DrawElementsType.UnsignedInt, 0);
+                        GL.DrawElements(entity.Model.DrawingMode, entity.Model.VerticesCount, 
+                            DrawElementsType.UnsignedInt, 0);
                     }
                 }
             }

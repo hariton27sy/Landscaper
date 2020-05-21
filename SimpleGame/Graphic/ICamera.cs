@@ -1,6 +1,6 @@
 ﻿using OpenTK;
 
-namespace SimpleGame.GraphicEngine
+namespace SimpleGame.Graphic
 {
     public interface ICamera
     {

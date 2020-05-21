@@ -1,11 +1,11 @@
 ﻿using OpenTK;
-using SimpleGame.GraphicEngine.Models;
+using SimpleGame.Graphic.Models;
 
-namespace SimpleGame.GraphicEngine
+namespace SimpleGame.Graphic
 {
     public interface IEntity
     {
-        Model Model { get; }
+        IModel Model { get; }
         Matrix4 TransformMatrix { get; }
     }
 }

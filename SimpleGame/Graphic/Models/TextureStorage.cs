@@ -1,49 +1,31 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using SimpleGame.Graphic.Models;
+using OpenTK.Graphics.OpenGL;
 using SimpleGame.Graphic.Models.Templates;
-using SimpleGame.GraphicEngine;
-using SimpleGame.GraphicEngine.Models;
 
-namespace SimpleGame.GameCore.GameModels
+namespace SimpleGame.Graphic.Models
 {
-    public class ModelsStorage
+    public class TextureStorage
     {
-        private readonly Dictionary<int, GameModel> models = new Dictionary<int, GameModel>();
         private readonly string directory;
+        private readonly Dictionary<int, Atlas> atlases = new Dictionary<int, Atlas>();
         private Dictionary<int, Texture> textures = new Dictionary<int, Texture>();
-        public Loader loader;
-
-        public readonly Dictionary<int, string> IdToName;
-        public readonly Dictionary<string, int> NameToId;
-
-        public GameModel this[int id] => models[id];
-
-        public bool Contains(int id) => models.ContainsKey(id);
-
-        public void AddModel(GameModel model)
-        {
-            models.Add(model.Id, model);
-        }
-
-        public ModelsStorage(Loader graphicLoader, string directory)
+        
+        public TextureStorage(string directory)
         {
             this.directory = directory;
-            IdToName = new Dictionary<int, string>();
-            NameToId = new Dictionary<string, int>();
-            loader = graphicLoader;
-            LoadModels();
+            LoadTextures();
         }
-
-        private void LoadModels()
+        
+        private void LoadTextures()
         {
             using (var f = new FileInfo(Path.Combine(directory, ".conf")).OpenText())
             {
                 var filesCount = int.Parse(f.ReadLine());
                 for (var i = 0; i < filesCount; i++)
                 {
-                    LoadTexture(f.ReadLine());
+                    LoadAtlas(f.ReadLine());
                 }
 
                 var modelsCount = int.Parse(f.ReadLine());
@@ -56,44 +38,44 @@ namespace SimpleGame.GameCore.GameModels
                     {
                         states[j] = f.ReadLine();
                     }
-                    LoadModel(info, states);
+                    LoadTexture(info, states);
                 }
             }
         }
 
-        private void LoadTexture(string textureInfo)
+        private void LoadAtlas(string atlasProperties)
         {
-            var data = textureInfo.Split();
+            var data = atlasProperties.Split();
             var id = int.Parse(data[0]);
             var width = int.Parse(data[2]);
             var height = int.Parse(data[3]);
             var elemWidth = int.Parse(data[4]);
             var elemHeight = int.Parse(data[5]);
-            var glId = loader.LoadTexture(Path.Combine(directory, data[1]));
-            textures[id] = new Texture(glId, width, height, elemWidth, elemHeight);
+            var glId = GlHelper.LoadTexture(Path.Combine(directory, data[1]));
+            atlases.Add(id, new Atlas(glId, width, height, elemWidth, elemHeight));
         }
 
-        private void LoadModel(string info, string[] states)
+        private void LoadTexture(string info, string[] states)
         {
             var splitted = info.Split();
             var id = int.Parse(splitted[1]);
             var name = splitted[2];
-            IdToName.Add(id, name);
-            NameToId.Add(name, id);
             
-            var _states = states.Select(ParseState).ToArray();
-            models.Add(id, new GameModel(id, name, _states.ToArray()));
+            
+            
+            var states_ = states.Select(ParseState).ToArray();
+            textures[id] = new Texture(name, states_);
         }
-
-        private IModel ParseState(string state)
+        
+        private Texture ParseState(string state)
         {
             var splitted = state.Split();
             var vertices = new List<float>();
-            var texId = int.Parse(splitted[0]);
+            var atlasId = int.Parse(splitted[0]);
             for (var i = 0; i < splitted.Length - 1; i++)
             {
                 var pos = int.Parse(splitted[i + 1]);
-                vertices.AddRange(textures[texId][pos]);
+                vertices.AddRange(atlases[atlasId][pos]);
             }
 
             if (splitted.Length == 4)
@@ -108,7 +90,12 @@ namespace SimpleGame.GameCore.GameModels
                 vertices = Enumerable.Repeat(vertices, 6).SelectMany(f => f).ToList();
             }
 
-            return loader.LoadTexturedModel(ModelTemplate.Cube, vertices.ToArray(), textures[texId].TextureId);
+            return new Texture(atlases[atlasId].GlAtlasId, vertices.ToArray());
+        }
+
+        ~TextureStorage()
+        {
+            GL.DeleteTextures(atlases.Count, atlases.Values.Select(a => a.GlAtlasId).ToArray());
         }
     }
 }

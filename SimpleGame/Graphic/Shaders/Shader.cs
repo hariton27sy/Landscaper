@@ -4,7 +4,7 @@ using System.IO;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
-namespace SimpleGame.GraphicEngine.Shaders
+namespace SimpleGame.Graphic.Shaders
 {
     public abstract class Shader : IDisposable
     {

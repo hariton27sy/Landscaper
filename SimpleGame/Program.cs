@@ -1,4 +1,9 @@
-﻿using SimpleGame.GraphicEngine;
+﻿using SimpleGame.GameCore;
+using SimpleGame.GameCore.Persons;
+using SimpleGame.GameCore.Worlds;
+using SimpleGame.Graphic;
+using SimpleGame.Graphic.Shaders;
+using SimpleGame.GraphicEngine;
 
 namespace SimpleGame
 {
@@ -6,7 +11,11 @@ namespace SimpleGame
     {
         static void Main(string[] args)
         {
-            var window = new TestWindow();
+            var renderer = new Renderer(new StaticShader());
+            
+            var world = new OverWorld();
+            var player = new Player();
+            var window = new Game(world, player, renderer);
             window.Run();
         }
     }

@@ -1,41 +1,61 @@
 ﻿using System;
-using System.Collections.Generic;
 using OpenTK;
 using OpenTK.Input;
-using SimpleGame.GameCore.GameModels;
+using SimpleGame.GameCore;
+using SimpleGame.GameCore.Persons;
 using SimpleGame.GameCore.Worlds;
-using SimpleGame.GraphicEngine;
+using SimpleGame.Graphic;
 
-namespace SimpleGame.GameCore
+namespace SimpleGame
 {
-    public class Game
+    public class Game : GameWindow
     {
-        private ModelsStorage storage;
-        public readonly IWorld World;
-        public readonly Player Player;
-
+        private readonly IWorld World;
+        private readonly Player Player;
         private DateTime previousTime;
+        private MouseState previousMouseState;
 
-        public bool IsMouseFixed { get; private set; }
-
-        public Game(IWorld world, Player player)
+        public Game(IWorld world, Player player, Renderer renderer)
         {
             World = world;
             Player = player;
-            previousTime = DateTime.Now;
+            Load += OnLoad;
         }
 
-        public void UpdateState()
+        private void OnLoad(object? sender, EventArgs e)
         {
+            KeyDown += OnKeyDown;
+            KeyUp += OnKeyUp;
+            UpdateFrame += UpdateState;
+            RenderFrame += OnRender;
+            MouseMove += (o, args) =>
+            {
+                if (!CursorVisible)
+                    Mouse.SetPosition(X + Width / 2f, Y + Height / 2f);
+            };
+        }
+
+        public void UpdateState(object sendet, FrameEventArgs args)
+        {
+            // Дельта сдвига мыши для движения камеры
+            var state = Mouse.GetState();
+            if (!CursorVisible)
+            {
+                Player.Yaw += state.X - previousMouseState.X;
+                Player.Pitch += state.Y - previousMouseState.Y;
+            }
+            previousMouseState = state;
+
+            // Для правильного движения игрока вне зависимости от частоты вызова этого метода
             var currTime = DateTime.Now;
             var delta = currTime - previousTime;
+            
             previousTime = currTime;
             Player.Position += Player.AbsoluteVelocity * (float) delta.TotalSeconds;
         }
 
-        public void OnKeyDown(object sender, KeyboardKeyEventArgs args)
+        private void OnKeyDown(object sender, KeyboardKeyEventArgs args)
         {
-            Vector3 delta = Vector3.Zero;
             switch (args.Key)
             {
                 case Key.Left:
@@ -54,12 +74,15 @@ namespace SimpleGame.GameCore
                 case Key.S:
                     Player.Velocity -= Vector3.UnitX;
                     break;
-                case Key.ControlLeft:
-                case Key.ControlRight:
-                    Player.MoveLocalByDelta(new Vector3(0,-0.1f,0));
+                case Key.LShift:
+                case Key.RShift:
+                    Player.Velocity -= Vector3.UnitY;
+                    break;
+                case Key.Space:
+                    Player.Velocity += Vector3.UnitY;
                     break;
                 case Key.P:
-                    IsMouseFixed = !IsMouseFixed;
+                    CursorVisible = !CursorVisible;
                     break;
                 default:
                     Console.WriteLine($"Unknown char '{args.Key}'");
@@ -67,41 +90,29 @@ namespace SimpleGame.GameCore
             }
         }
 
-        public void OnKeyUp(object sender, KeyboardKeyEventArgs args)
+        private void OnKeyUp(object sender, KeyboardKeyEventArgs args)
         {
             switch (args.Key)
             {
                 case Key.Left:
                 case Key.A:
-                    Player.Velocity = new Vector3(Player.Velocity.X, Player.Velocity.Y, 0);
-                    break;
                 case Key.Right:
                 case Key.D:
                     Player.Velocity = new Vector3(Player.Velocity.X, Player.Velocity.Y, 0);
                     break;
                 case Key.Up:
                 case Key.W:
-                    Player.Velocity = new Vector3(0, Player.Velocity.Y, Player.Velocity.Z);
-                    break;
                 case Key.Down:
                 case Key.S:
                     Player.Velocity = new Vector3(0, Player.Velocity.Y, Player.Velocity.Z);
                     break;
                 case Key.ControlLeft:
                 case Key.ControlRight:
-                    Player.MoveLocalByDelta(new Vector3(0, -0.1f, 0));
+                case Key.Space:
+                    Player.Velocity = new Vector3(Player.Velocity.X, 0, Player.Velocity.Z);
                     break;
             }
 
-        }
-
-        public void OnMouse(MouseArgs args)
-        {
-            if (IsMouseFixed)
-            {
-                Player.Pitch -= args.DeltaY * Preferences.Sensibility;
-                Player.Yaw += args.DeltaX * Preferences.Sensibility;
-            }
         }
 
         private Vector2 WorldToChunkPosition(Vector2 worldPosition)
@@ -114,19 +125,16 @@ namespace SimpleGame.GameCore
             return WorldToChunkPosition(new Vector2(worldPosition.X, worldPosition.Y));
         }
 
-        public IEntity[] OnRender()
+        public void OnRender(object sender, FrameEventArgs args)
         {
             var anchor = WorldToChunkPosition(Player.Position);
-            var result = new List<IEntity>();
             foreach (var chunk in World.GetChunksInRadius(anchor, Preferences.ChunkRenderRadius))
             {
-                foreach (var entity in chunk.GetEntitiesToRender())
+                using (chunk.Model.Start())
                 {
-                    result.Add(entity);
+                    
                 }
             }
-
-            return result.ToArray();
         }
     }
 }
