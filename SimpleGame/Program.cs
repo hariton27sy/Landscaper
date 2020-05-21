@@ -10,11 +10,11 @@ namespace SimpleGame
     {
         static void Main(string[] args)
         {
-            var renderer = new Renderer(new StaticShader());
+            // var renderer = new Renderer(new StaticShader());
             
             var player = new Player();
             var world = new OverWorld(player);
-            var window = new Game(world, player, renderer);
+            var window = new Game(world, player);
             window.Run();
         }
     }

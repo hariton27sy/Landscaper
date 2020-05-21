@@ -7,7 +7,7 @@ namespace SimpleGame.GameCore.Worlds
 {
     public class OverWorld : IWorld
     {
-        private Dictionary<Vector2, Chunk> chunks;
+        private Dictionary<Vector2, Chunk> chunks = new Dictionary<Vector2, Chunk>();
         
         public Chunk GetChunk(Vector2 chunkPosition)
         {

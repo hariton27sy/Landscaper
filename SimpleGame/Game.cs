@@ -7,6 +7,7 @@ using SimpleGame.GameCore.Persons;
 using SimpleGame.GameCore.Worlds;
 using SimpleGame.Graphic;
 using SimpleGame.Graphic.Models;
+using SimpleGame.Graphic.Shaders;
 
 namespace SimpleGame
 {
@@ -15,12 +16,12 @@ namespace SimpleGame
         private readonly IWorld World;
         private readonly Player Player;
         private readonly TextureStorage textures;
-        private readonly Renderer renderer;
+        private Renderer renderer;
         
         private DateTime previousTime;
         private MouseState previousMouseState;
 
-        public Game(IWorld world, Player player, Renderer renderer)
+        public Game(IWorld world, Player player)
         {
             World = world;
             Player = player;
@@ -30,6 +31,7 @@ namespace SimpleGame
 
         private void OnLoad(object? sender, EventArgs e)
         {
+            renderer = new Renderer(new StaticShader());
             KeyDown += OnKeyDown;
             KeyUp += OnKeyUp;
             UpdateFrame += UpdateState;
