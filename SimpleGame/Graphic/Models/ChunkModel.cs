@@ -44,6 +44,47 @@ namespace SimpleGame.Graphic.Models
                     AddBlock(x, y, z);
             }
         }
+        
+        private bool HasNeighbourOn(int x, int y, int z, BlockEdge edge)
+        {
+            var dx = 0;
+            var dy = 0;
+            var dz = 0;
+            
+            switch (edge)
+            {
+                case BlockEdge.Right:
+                    dx = 1;
+                    break;
+                case BlockEdge.Left:
+                    dx = -1;
+                    break;
+                case BlockEdge.Front:
+                    dz = 1;
+                    break;
+                case BlockEdge.Back:
+                    dz = -1;
+                    break;
+                case BlockEdge.Top:
+                    dy = 1;
+                    break;
+                case BlockEdge.Bottom:
+                    dy = -1;
+                    break;
+            }
+
+            var neighbour = 0;
+            try
+            {
+                neighbour = chunk.Map[x + dx, y + dy, z + dy];
+            }
+            catch (IndexOutOfRangeException e)
+            {
+                
+            }
+
+            return neighbour != 0;
+        }
 
         private void AddBlock(int x, int y, int z)
         {
@@ -52,8 +93,8 @@ namespace SimpleGame.Graphic.Models
                 return;
             var looking = camera.Direction;
             var blockTexture = storage[chunk.Map[x, y, z]];
-            // var offset = new Vector3(x + 0.5f, y + 0.5f, z + 0.5f);
-            var offset = new Vector3(x, y, z);
+            var offset = new Vector3(x + 0.5f, y + 0.5f, z + 0.5f);
+            // var offset = new Vector3(x, y, z);
             var toSee = new HashSet<BlockEdge>();
             
             var playerRelativePosition = new Vector3(
@@ -62,11 +103,13 @@ namespace SimpleGame.Graphic.Models
                 camera.Position.Z - chunk.Location.Y * Chunk.Length + offset.Z);
             if (playerRelativePosition.X > 0)
             {
-                toSee.Add(BlockEdge.Right);
+                if (!HasNeighbourOn(x, y, z, BlockEdge.Right))
+                    toSee.Add(BlockEdge.Right);
             }
             else if (playerRelativePosition.X < 0)
             {
-                toSee.Add(BlockEdge.Left);
+                if (!HasNeighbourOn(x, y, z, BlockEdge.Left))
+                    toSee.Add(BlockEdge.Left);
             }
             else
             {
@@ -74,11 +117,13 @@ namespace SimpleGame.Graphic.Models
             }
             if (playerRelativePosition.Y > 0)
             {
-                toSee.Add(BlockEdge.Top);
+                if (!HasNeighbourOn(x, y, z, BlockEdge.Top))
+                    toSee.Add(BlockEdge.Top);
             }
             else if (playerRelativePosition.Y < 0)
             {
-                toSee.Add(BlockEdge.Bottom);
+                if (!HasNeighbourOn(x, y, z, BlockEdge.Bottom))
+                    toSee.Add(BlockEdge.Bottom);
             }
             else
             {
@@ -86,11 +131,13 @@ namespace SimpleGame.Graphic.Models
             }
             if (playerRelativePosition.Z > 0)
             {
-                toSee.Add(BlockEdge.Front);
+                if (!HasNeighbourOn(x, y, z, BlockEdge.Front)) 
+                    toSee.Add(BlockEdge.Front);
             }
             else if (playerRelativePosition.Z < 0)
             {
-                toSee.Add(BlockEdge.Back);
+                if (!HasNeighbourOn(x, y, z, BlockEdge.Back))
+                    toSee.Add(BlockEdge.Back);
             }
             else
             {
