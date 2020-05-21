@@ -71,11 +71,11 @@ namespace SimpleGame
             {
                 case Key.Left:
                 case Key.A:
-                    Player.Velocity -= Vector3.UnitZ;
+                    Player.Velocity = new Vector3(Player.Velocity.X, Player.Velocity.Y, -20);
                     break;
                 case Key.Right:
                 case Key.D:
-                    Player.Velocity += Vector3.UnitZ;
+                    Player.Velocity = new Vector3(Player.Velocity.X, Player.Velocity.Y, 20);
                     break;
                 case Key.Up:
                 case Key.W:

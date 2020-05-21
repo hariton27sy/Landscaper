@@ -51,45 +51,45 @@ namespace SimpleGame.Graphic.Models
             var direction = camera.Direction;
             var blockTexture = storage[chunk.Map[x, y, z]];
             var offset = new Vector3(x + 0.5f, y + 0.5f, z + 0.5f);
-            if (true || direction.X >= 0 && (x == 0 || chunk.Map[x - 1, y, z] == air))
+            if (direction.X >= 0 && (x == 0 || chunk.Map[x - 1, y, z] == air))
             {
-                AddEdge(BlockModel.RightVertices, offset);
-                textureCoords.AddRange(blockTexture.Right);
-                AddIndices();
-            }
-            
-            if (true || direction.X <= 0 && (x == Chunk.Width - 1 || chunk.Map[x + 1, y, z] == air))
-            {
-                AddEdge(BlockModel.LeftVertices, offset);
+                AddFace(BlockModel.LeftVertices, offset);
                 textureCoords.AddRange(blockTexture.Left);
                 AddIndices();
             }
             
-            if (true || direction.Z >= 0 && (z == 0 || chunk.Map[x, y, z - 1] == air))
+            if (direction.X <= 0 && (x == Chunk.Width - 1 || chunk.Map[x + 1, y, z] == air))
             {
-                AddEdge(BlockModel.TopVertices, offset);
+                AddFace(BlockModel.RightVertices, offset);
+                textureCoords.AddRange(blockTexture.Right);
+                AddIndices();
+            }
+            
+            if (direction.Z >= 0 && (z == 0 || chunk.Map[x, y, z - 1] == air))
+            {
+                AddFace(BlockModel.BackVertices, offset);
+                textureCoords.AddRange(blockTexture.Back);
+                AddIndices();
+            }
+            
+            if (direction.Z <= 0 && (z == Chunk.Length - 1 || chunk.Map[x, y, z + 1] == air))
+            {
+                AddFace(BlockModel.TopVertices, offset);
                 textureCoords.AddRange(blockTexture.Top);
                 AddIndices();
             }
             
-            if (true || direction.Z <= 0 && (z == Chunk.Length - 1 || chunk.Map[x, y, z + 1] == air))
+            if (direction.Y >= 0 && (y == 0 || chunk.Map[x, y - 1, z] == air))
             {
-                AddEdge(BlockModel.BackVertices, offset);
-                textureCoords.AddRange(blockTexture.Top);
-                AddIndices();
-            }
-            
-            if (true || direction.Y >= 0 && (y == 0 || chunk.Map[x, y - 1, z] == air))
-            {
-                AddEdge(BlockModel.TopVertices, offset);
-                textureCoords.AddRange(blockTexture.Top);
-                AddIndices();
-            }
-            
-            if (true || direction.Y <= 0 && (y == Chunk.Height - 1 || chunk.Map[x, y + 1, z] == air))
-            {
-                AddEdge(BlockModel.BottomVertices, offset);
+                AddFace(BlockModel.BottomVertices, offset);
                 textureCoords.AddRange(blockTexture.Bottom);
+                AddIndices();
+            }
+            
+            if (direction.Y <= 0 && (y == Chunk.Height - 1 || chunk.Map[x, y + 1, z] == air))
+            {
+                AddFace(BlockModel.TopVertices, offset);
+                textureCoords.AddRange(blockTexture.Top);
                 AddIndices();
             }
         }
@@ -102,7 +102,7 @@ namespace SimpleGame.Graphic.Models
             lastIndex += 4;
         }
 
-        private void AddEdge(Vector3[] vertices, Vector3 offset)
+        private void AddFace(Vector3[] vertices, Vector3 offset)
         {
             foreach (var vertex in vertices)
             {

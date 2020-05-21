@@ -24,7 +24,7 @@ namespace SimpleGame.Graphic
         public float Aspect
         {
             set =>
-                ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(70), 
+                ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(90), 
                     value, 0.01f, 1000);
         }
 
