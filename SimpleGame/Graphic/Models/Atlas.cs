@@ -40,10 +40,10 @@ namespace SimpleGame.Graphic.Models
                 
                 return new float[]
                 {
-                    x * elemWidth, (y + 1) * elemHeight,
-                    (x + 1) * elemWidth, (y + 1) * elemHeight,
-                    (x + 1) * elemWidth, y * elemHeight,
-                    x * elemWidth, y * elemHeight,
+                    (float)x * elemWidth / width, (float)(y + 1) * elemHeight / height,
+                    (float)(x + 1) * elemWidth / width, (float)(y + 1) * elemHeight / height,
+                    (float)(x + 1) * elemWidth / width, (float)y * elemHeight / height,
+                    (float)x * elemWidth / width, y * (float)elemHeight / height,
                 };
             }
         }

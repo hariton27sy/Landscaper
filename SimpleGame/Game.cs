@@ -43,6 +43,7 @@ namespace SimpleGame
                 if (!CursorVisible)
                     Mouse.SetPosition(X + Width / 2f, Y + Height / 2f);
             };
+            renderer.Aspect = (float) Width / Height;
         }
 
         public void UpdateState(object sendet, FrameEventArgs args)
@@ -52,7 +53,7 @@ namespace SimpleGame
             if (!CursorVisible)
             {
                 Player.Yaw += state.X - previousMouseState.X;
-                Player.Pitch += state.Y - previousMouseState.Y;
+                Player.Pitch -= state.Y - previousMouseState.Y;
             }
             previousMouseState = state;
 

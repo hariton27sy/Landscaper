@@ -25,7 +25,7 @@ namespace SimpleGame.GameCore.Worlds
             var dirt = 3;
             var stone = 4;
             var bedrock = 0;
-            result[0, 0, 0] = 1;
+            result[0, 0, 0] = 2;
             
             for (var y = 0; y < Chunk.Height; y++)
             {
