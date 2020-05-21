@@ -12,8 +12,8 @@ namespace SimpleGame
         {
             var renderer = new Renderer(new StaticShader());
             
-            var world = new OverWorld();
             var player = new Player();
+            var world = new OverWorld(player);
             var window = new Game(world, player, renderer);
             window.Run();
         }

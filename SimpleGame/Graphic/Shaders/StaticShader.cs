@@ -5,8 +5,8 @@ namespace SimpleGame.Graphic.Shaders
 {
     public class StaticShader : Shader
     {
-        private const string VertexShaderFilename = "GraphicEngine/Shaders/colored.vert";
-        private const string FragmentShader = "GraphicEngine/Shaders/simple.frag";
+        private const string VertexShaderFilename = "Graphic/Shaders/colored.vert";
+        private const string FragmentShader = "Graphic/Shaders/simple.frag";
 
         private int viewMatrix, projectionMatrix, transformationMatrix;
         private int isTextured;

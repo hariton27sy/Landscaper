@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using OpenTK;
+using SimpleGame.GameCore.Persons;
 
 namespace SimpleGame.GameCore.Worlds
 {
@@ -49,6 +50,7 @@ namespace SimpleGame.GameCore.Worlds
         }
         
         private Func<Vector2, float, bool> IsInCircle = (d, r) => d.X*d.X + d.Y*d.Y <= r*r;
+        private Player player;
 
         public IEnumerable<Chunk> GetChunksInRadius(Vector2 anchor, int chunkRenderRadius)
         {
@@ -65,8 +67,18 @@ namespace SimpleGame.GameCore.Worlds
             }
         }
 
+        public void Update(TimeSpan delta)
+        {
+            player.Position += player.AbsoluteVelocity * (float) delta.TotalSeconds;
+        }
+
         public void OnCLose()
         {
+        }
+
+        public OverWorld(Player player)
+        {
+            this.player = player;
         }
     }
 }
