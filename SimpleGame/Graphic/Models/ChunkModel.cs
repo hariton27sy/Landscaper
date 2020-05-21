@@ -9,9 +9,9 @@ namespace SimpleGame.Graphic.Models
 {
     public class ChunkModel : IModel
     {
-        private List<float> vertices;
-        private List<float> textureCoords;
-        private List<int> indices;
+        private List<float> vertices = new List<float>();
+        private List<float> textureCoords = new List<float>();
+        private List<int> indices = new List<int>();
         private int lastIndex;
         
         private Chunk chunk;

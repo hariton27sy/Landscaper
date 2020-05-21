@@ -25,11 +25,11 @@ namespace SimpleGame
         {
             World = world;
             Player = player;
-            this.renderer = renderer;
             Load += OnLoad;
+            textures = new TextureStorage("textures");
         }
 
-        private void OnLoad(object? sender, EventArgs e)
+        private void OnLoad(object sender, EventArgs e)
         {
             renderer = new Renderer(new StaticShader());
             KeyDown += OnKeyDown;
