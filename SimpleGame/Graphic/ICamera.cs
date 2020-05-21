@@ -6,5 +6,6 @@ namespace SimpleGame.Graphic
     {
         Matrix4 ViewMatrix { get; }
         Vector3 Direction { get; }
+        Vector3 Position { get; }
     }
 }

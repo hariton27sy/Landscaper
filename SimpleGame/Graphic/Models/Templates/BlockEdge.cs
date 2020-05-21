@@ -6,7 +6,7 @@
         Right,
         Back,
         Left,
-        Up,
+        Front,
         Bottom
     }
 }

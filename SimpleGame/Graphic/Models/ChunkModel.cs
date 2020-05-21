@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using NLog.LayoutRenderers;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using SimpleGame.GameCore.Worlds;
@@ -42,54 +44,63 @@ namespace SimpleGame.Graphic.Models
                     AddBlock(x, y, z);
             }
         }
-        
+
         private void AddBlock(int x, int y, int z)
         {
             var air = -1;
             if (chunk.Map[x, y, z] == air)
                 return;
-            var direction = camera.Direction;
+            var looking = camera.Direction;
             var blockTexture = storage[chunk.Map[x, y, z]];
-            var offset = new Vector3(x + 0.5f, y + 0.5f, z + 0.5f);
-            if (direction.X >= 0 && (x == 0 || chunk.Map[x - 1, y, z] == air))
-            {
-                AddFace(BlockModel.LeftVertices, offset);
-                textureCoords.AddRange(blockTexture.Left);
-                AddIndices();
-            }
+            // var offset = new Vector3(x + 0.5f, y + 0.5f, z + 0.5f);
+            var offset = new Vector3(x, y, z);
+            var toSee = new HashSet<BlockEdge>();
             
-            if (direction.X <= 0 && (x == Chunk.Width - 1 || chunk.Map[x + 1, y, z] == air))
+            var playerRelativePosition = new Vector3(
+                camera.Position.X - chunk.Location.X * Chunk.Width + offset.X , 
+                camera.Position.Y - offset.Y, 
+                camera.Position.Z - chunk.Location.Y * Chunk.Length + offset.Z);
+            if (playerRelativePosition.X > 0)
             {
-                AddFace(BlockModel.RightVertices, offset);
-                textureCoords.AddRange(blockTexture.Right);
-                AddIndices();
+                toSee.Add(BlockEdge.Right);
             }
-            
-            if (direction.Z >= 0 && (z == 0 || chunk.Map[x, y, z - 1] == air))
+            else if (playerRelativePosition.X < 0)
             {
-                AddFace(BlockModel.BackVertices, offset);
-                textureCoords.AddRange(blockTexture.Back);
-                AddIndices();
+                toSee.Add(BlockEdge.Left);
             }
-            
-            if (direction.Z <= 0 && (z == Chunk.Length - 1 || chunk.Map[x, y, z + 1] == air))
+            else
             {
-                AddFace(BlockModel.TopVertices, offset);
-                textureCoords.AddRange(blockTexture.Top);
-                AddIndices();
+                
             }
-            
-            if (direction.Y >= 0 && (y == 0 || chunk.Map[x, y - 1, z] == air))
+            if (playerRelativePosition.Y > 0)
             {
-                AddFace(BlockModel.BottomVertices, offset);
-                textureCoords.AddRange(blockTexture.Bottom);
-                AddIndices();
+                toSee.Add(BlockEdge.Top);
             }
-            
-            if (direction.Y <= 0 && (y == Chunk.Height - 1 || chunk.Map[x, y + 1, z] == air))
+            else if (playerRelativePosition.Y < 0)
             {
-                AddFace(BlockModel.TopVertices, offset);
-                textureCoords.AddRange(blockTexture.Top);
+                toSee.Add(BlockEdge.Bottom);
+            }
+            else
+            {
+                
+            }
+            if (playerRelativePosition.Z > 0)
+            {
+                toSee.Add(BlockEdge.Front);
+            }
+            else if (playerRelativePosition.Z < 0)
+            {
+                toSee.Add(BlockEdge.Back);
+            }
+            else
+            {
+                
+            }
+
+            foreach (var edge in toSee)
+            {
+                AddFace(BlockModel.GetEdge(edge), offset);
+                textureCoords.AddRange(blockTexture.GetEdge(edge));
                 AddIndices();
             }
         }
