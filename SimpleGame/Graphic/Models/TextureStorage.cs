@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using SimpleGame.Graphic.Models.Templates;
 
 namespace SimpleGame.Graphic.Models
 {

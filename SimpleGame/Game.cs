@@ -28,6 +28,7 @@ namespace SimpleGame
             Player = player;
             Load += OnLoad;
             textures = new TextureStorage("textures");
+            VSync = VSyncMode.On;
         }
 
         private void OnLoad(object sender, EventArgs e)

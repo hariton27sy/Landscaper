@@ -51,17 +51,17 @@ namespace SimpleGame.Graphic.Models
             var direction = camera.Direction;
             var blockTexture = storage[chunk.Map[x, y, z]];
             var offset = new Vector3(x + 0.5f, y + 0.5f, z + 0.5f);
-            if (true || direction.X >= 0 && (x == 0 || chunk.Map[x - 1, y, z] == air))
+            if (direction.X >= 0 && (x == 0 || chunk.Map[x - 1, y, z] == air))
             {
-                AddEdge(BlockModel.LeftVertices, offset);
-                textureCoords.AddRange(blockTexture.Left);
+                AddEdge(BlockModel.RightVertices, offset);
+                textureCoords.AddRange(blockTexture.Right);
                 AddIndices();
             }
             
             if (direction.X <= 0 && (x == Chunk.Width - 1 || chunk.Map[x + 1, y, z] == air))
             {
-                AddEdge(BlockModel.RightVertices, offset);
-                textureCoords.AddRange(blockTexture.Right);
+                AddEdge(BlockModel.LeftVertices, offset);
+                textureCoords.AddRange(blockTexture.Left);
                 AddIndices();
             }
             
@@ -136,6 +136,7 @@ namespace SimpleGame.Graphic.Models
             textureVbo = GlHelper.LoadVbo(2, 2, textureCoords.ToArray());
             GL.EnableVertexAttribArray(0);
             GL.EnableVertexAttribArray(2);
+            GL.BindTexture(TextureTarget.Texture2D, storage[1].AtlasGlId);
             return this;
         }
 

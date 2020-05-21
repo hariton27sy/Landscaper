@@ -9,7 +9,7 @@ namespace SimpleGame.Graphic
 {
     public class Renderer
     {
-        private Matrix4 projectionMatrix;
+        private Matrix4 projectionMatrix = Matrix4.Identity;
 
         public Matrix4 ProjectionMatrix
         {
@@ -33,6 +33,10 @@ namespace SimpleGame.Graphic
         public Renderer(StaticShader shader)
         {
             this.shader = shader;
+            using (shader.Start())
+            {
+                shader.ProjectionMatrix = ProjectionMatrix;
+            }
             GL.Enable(EnableCap.DepthTest);
         }
 

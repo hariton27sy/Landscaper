@@ -25,6 +25,7 @@ namespace SimpleGame.GameCore.Worlds
             var dirt = 3;
             var stone = 4;
             var bedrock = 0;
+            result[0, 0, 0] = 1;
             
             for (var y = 0; y < Chunk.Height; y++)
             {
@@ -33,15 +34,15 @@ namespace SimpleGame.GameCore.Worlds
                     for (var z = 0; z < Chunk.Length; z++)
                     {
                         var block = -1;
-                        if (y < 10)
-                            block = dirt;
-                        if (y < 5)
-                            block = stone;
-                        if (y == 10)
-                            block = grass;
-                        if (y == 0)
-                            block = bedrock;
-                        result[x, y, z] = block;
+                        // if (y < 10)
+                        //     block = dirt;
+                        // if (y < 5)
+                        //     block = stone;
+                        // if (y == 10)
+                        //     block = grass;
+                        // if (y == 0)
+                        //     block = bedrock;
+                        // result[x, y, z] = block;
                     }
                 }
             }

@@ -24,15 +24,15 @@ namespace SimpleGame.GameCore.Persons
         
         public Vector3 Position { get; set; }
 
-        public float Yaw
-        {
-            get => yaw;
-            set => yaw = Math.Sign(value) * Math.Max(89.9f, Math.Abs(value));
+        public float Yaw { get; set; }
+        
+
+        public float Pitch {
+            get => pitch;
+            set => pitch = Math.Sign(value) * Math.Min(89f, Math.Abs(value));
         }
 
-        public float Pitch { get; set; }
-
-        private float yaw;
+        private float pitch;
         
         public Player(Vector3 position = new Vector3(), float yaw=0, float pitch=0)
         {
@@ -47,12 +47,12 @@ namespace SimpleGame.GameCore.Persons
         {
             get
             {
-                var cosYaw = (float) Math.Cos(MathHelper.DegreesToRadians(Yaw));
-                var sinYaw = (float) Math.Sin(MathHelper.DegreesToRadians(Yaw));
-                var cosPitch = (float) Math.Cos(MathHelper.DegreesToRadians(Pitch));
-                var sinPitch = (float) Math.Sin(MathHelper.DegreesToRadians(Pitch));
-                
-                return Vector3.Normalize(new Vector3(cosYaw * cosPitch, sinYaw * cosPitch, sinPitch));
+                var front = new Vector3((float) Math.Cos(MathHelper.DegreesToRadians(Pitch)) *
+                                            (float) Math.Cos(MathHelper.DegreesToRadians(Yaw)),
+                                         (float) Math.Sin(MathHelper.DegreesToRadians(Pitch)),
+                                         (float) Math.Cos(MathHelper.DegreesToRadians(Pitch)) *
+                                            (float) Math.Sin(MathHelper.DegreesToRadians(Yaw)));
+                return Vector3.Normalize(front);
             }
         }
     }
