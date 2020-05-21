@@ -11,13 +11,17 @@ namespace SimpleGame.Graphic.Models
         private readonly string directory;
         private readonly Dictionary<int, Atlas> atlases = new Dictionary<int, Atlas>();
         private Dictionary<int, Texture> textures = new Dictionary<int, Texture>();
+        private Dictionary<string, Texture> texturesByName = new Dictionary<string, Texture>();
         
         public TextureStorage(string directory)
         {
             this.directory = directory;
             LoadTextures();
         }
-        
+
+        public Texture this[int value] => textures[value];
+        public Texture this[string value] => texturesByName[value];
+
         private void LoadTextures()
         {
             using (var f = new FileInfo(Path.Combine(directory, ".conf")).OpenText())
@@ -65,6 +69,7 @@ namespace SimpleGame.Graphic.Models
             
             var states = statesStr.Select(ParseState).ToArray();
             textures[id] = new Texture(name, states);
+            texturesByName[name] = textures[id];
         }
         
         private Texture ParseState(string state)

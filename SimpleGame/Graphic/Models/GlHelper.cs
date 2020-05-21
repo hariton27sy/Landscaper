@@ -38,7 +38,26 @@ namespace SimpleGame.Graphic.Models
             
             return textureId;
         }
-        
-        
+
+        public static int LoadVbo(int attributeIndex, int vertexDimension, float[] vertices)
+        {
+            var vbo = GL.GenBuffer();
+            GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
+            GL.BufferData(BufferTarget.ArrayBuffer, sizeof(float) * vertices.Length, vertices, 
+                BufferUsageHint.StaticDraw);
+            GL.VertexAttribPointer(attributeIndex, vertexDimension, VertexAttribPointerType.Float, false, 0, 0);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+            return vbo;
+        }
+
+        public static int LoadIndices(int[] indices)
+        {
+            var vbo = GL.GenBuffer();
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, vbo);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, sizeof(int) * indices.Length, indices, 
+                BufferUsageHint.StaticDraw);
+
+            return vbo;
+        }
     }
 }

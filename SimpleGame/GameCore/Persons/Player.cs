@@ -45,14 +45,20 @@ namespace SimpleGame.GameCore.Persons
         {
             get
             {
+                return Matrix4.LookAt(Position, Position + Direction, Vector3.UnitY);
+            }
+        }
+
+        public Vector3 Direction
+        {
+            get
+            {
                 var cosYaw = (float) Math.Cos(MathHelper.DegreesToRadians(Yaw));
                 var sinYaw = (float) Math.Sin(MathHelper.DegreesToRadians(Yaw));
                 var cosPitch = (float) Math.Cos(MathHelper.DegreesToRadians(Pitch));
                 var sinPitch = (float) Math.Sin(MathHelper.DegreesToRadians(Pitch));
                 
-                var viewDirection = Vector3.Normalize(new Vector3(cosYaw * cosPitch, 
-                    sinYaw * cosPitch, sinPitch));
-                return Matrix4.LookAt(Position, Position + viewDirection, Vector3.UnitY);
+                return Vector3.Normalize(new Vector3(cosYaw * cosPitch, sinYaw * cosPitch, sinPitch));
             }
         }
     }

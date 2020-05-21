@@ -19,7 +19,7 @@ namespace SimpleGame.GameCore.Worlds
             Map = map;
         }
 
-        public IModel GetModel(TextureStorage storage) => new ChunkModel(this, storage);
+        public IModel GetModel(TextureStorage storage, ICamera camera) => new ChunkModel(this, storage, camera);
 
         public Matrix4 TransformMatrix => 
             Matrix4.CreateTranslation(Location.X * Width, 0, Location.Y * Length);

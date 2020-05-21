@@ -48,7 +48,7 @@ namespace SimpleGame.Graphic
             {
                 foreach (var entity in entities)
                 {
-                    var model = entity.Model;
+                    var model = entity.GetModel(storage, camera);
                     using (model.Start())
                     {
                         shader.IsTextured = model.IsTextured;
