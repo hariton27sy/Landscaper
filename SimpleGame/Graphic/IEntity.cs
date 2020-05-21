@@ -5,7 +5,7 @@ namespace SimpleGame.Graphic
 {
     public interface IEntity
     {
-        IModel Model { get; }
+        IModel GetModel(TextureStorage storage);
         Matrix4 TransformMatrix { get; }
     }
 }

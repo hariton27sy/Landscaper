@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using OpenTK.Graphics.OpenGL;
 using SimpleGame.Graphic.Models.Templates;
 
 namespace SimpleGame.Graphic.Models
 {
-    public class TextureStorage
+    public class TextureStorage : IDisposable
     {
         private readonly string directory;
         private readonly Dictionary<int, Atlas> atlases = new Dictionary<int, Atlas>();
@@ -55,7 +55,7 @@ namespace SimpleGame.Graphic.Models
             atlases.Add(id, new Atlas(glId, width, height, elemWidth, elemHeight));
         }
 
-        private void LoadTexture(string info, string[] states)
+        private void LoadTexture(string info, string[] statesStr)
         {
             var splitted = info.Split();
             var id = int.Parse(splitted[1]);
@@ -63,8 +63,8 @@ namespace SimpleGame.Graphic.Models
             
             
             
-            var states_ = states.Select(ParseState).ToArray();
-            textures[id] = new Texture(name, states_);
+            var states = statesStr.Select(ParseState).ToArray();
+            textures[id] = new Texture(name, states);
         }
         
         private Texture ParseState(string state)
@@ -95,7 +95,18 @@ namespace SimpleGame.Graphic.Models
 
         ~TextureStorage()
         {
-            GL.DeleteTextures(atlases.Count, atlases.Values.Select(a => a.GlAtlasId).ToArray());
+            ReleaseUnmanagedResources();
+        }
+
+        private void ReleaseUnmanagedResources()
+        {
+            GlHelper.VaoRemover(atlases.Values.Select(a => a.GlAtlasId).ToArray());
+        }
+
+        public void Dispose()
+        {
+            ReleaseUnmanagedResources();
+            GC.SuppressFinalize(this);
         }
     }
 }

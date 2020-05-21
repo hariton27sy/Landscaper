@@ -1,6 +1,8 @@
-﻿using System.Drawing;
+﻿using System.Collections.Generic;
+using System.Drawing;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
+using SimpleGame.Graphic.Models;
 using SimpleGame.Graphic.Shaders;
 
 namespace SimpleGame.Graphic
@@ -40,18 +42,19 @@ namespace SimpleGame.Graphic
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
         }
 
-        public void Render(ICamera camera, params IEntity[] entities)
+        public void Render(ICamera camera, TextureStorage storage, IEnumerable<IEntity> entities)
         {
             using (shader.Start())
             {
                 foreach (var entity in entities)
                 {
-                    using (entity.Model.Start())
+                    var model = entity.Model;
+                    using (model.Start())
                     {
-                        shader.IsTextured = entity.Model.IsTextured;
+                        shader.IsTextured = model.IsTextured;
                         shader.TransformationMatrix = entity.TransformMatrix;
                         shader.ViewMatrix = camera.ViewMatrix;
-                        GL.DrawElements(entity.Model.DrawingMode, entity.Model.VerticesCount, 
+                        GL.DrawElements(model.DrawingMode, model.VerticesCount, 
                             DrawElementsType.UnsignedInt, 0);
                     }
                 }

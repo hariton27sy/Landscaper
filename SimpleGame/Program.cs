@@ -3,7 +3,6 @@ using SimpleGame.GameCore.Persons;
 using SimpleGame.GameCore.Worlds;
 using SimpleGame.Graphic;
 using SimpleGame.Graphic.Shaders;
-using SimpleGame.GraphicEngine;
 
 namespace SimpleGame
 {

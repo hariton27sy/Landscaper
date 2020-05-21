@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Linq;
 using OpenTK;
 using OpenTK.Input;
 using SimpleGame.GameCore;
 using SimpleGame.GameCore.Persons;
 using SimpleGame.GameCore.Worlds;
 using SimpleGame.Graphic;
+using SimpleGame.Graphic.Models;
 
 namespace SimpleGame
 {
@@ -12,6 +14,9 @@ namespace SimpleGame
     {
         private readonly IWorld World;
         private readonly Player Player;
+        private readonly TextureStorage textures;
+        private readonly Renderer renderer;
+        
         private DateTime previousTime;
         private MouseState previousMouseState;
 
@@ -19,6 +24,7 @@ namespace SimpleGame
         {
             World = world;
             Player = player;
+            this.renderer = renderer;
             Load += OnLoad;
         }
 
@@ -117,7 +123,7 @@ namespace SimpleGame
 
         private Vector2 WorldToChunkPosition(Vector2 worldPosition)
         {
-            return new Vector2((int)worldPosition.X / Chunk.Width, (int)worldPosition.Y / Chunk.Length);
+            return new Vector2((int)(worldPosition.X / Chunk.Width), (int)(worldPosition.Y / Chunk.Length));
         }
 
         private Vector2 WorldToChunkPosition(Vector3 worldPosition)
@@ -125,16 +131,10 @@ namespace SimpleGame
             return WorldToChunkPosition(new Vector2(worldPosition.X, worldPosition.Y));
         }
 
-        public void OnRender(object sender, FrameEventArgs args)
+        private void OnRender(object sender, FrameEventArgs args)
         {
             var anchor = WorldToChunkPosition(Player.Position);
-            foreach (var chunk in World.GetChunksInRadius(anchor, Preferences.ChunkRenderRadius))
-            {
-                using (chunk.Model.Start())
-                {
-                    
-                }
-            }
+            renderer.Render(Player, textures, World.GetChunksInRadius(anchor, Preferences.ChunkRenderRadius));
         }
     }
 }

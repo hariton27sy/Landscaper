@@ -1,26 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using OpenTK;
-using SimpleGame.GameCore.GameModels;
 
 namespace SimpleGame.GameCore.Worlds
 {
     public class OverWorld : IWorld
     {
-        private ModelsStorage models;
         private Dictionary<Vector2, Chunk> chunks;
-
-        public OverWorld(ModelsStorage models)
-        {
-            this.models = models;
-            chunks = new Dictionary<Vector2, Chunk>();
-        }
         
         public Chunk GetChunk(Vector2 chunkPosition)
         {
             if (chunks.TryGetValue(chunkPosition, out var chunk))
                 return chunk;
-            chunk = new Chunk(models, chunkPosition, GenerateNewChunk());
+            chunk = new Chunk(chunkPosition, GenerateNewChunk());
             chunks.Add(chunkPosition, chunk);
             return chunk;
         }

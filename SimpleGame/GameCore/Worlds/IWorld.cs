@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using OpenTK;
-using SimpleGame.GameCore.Map;
-using SimpleGame.GraphicEngine;
 
 namespace SimpleGame.GameCore.Worlds
 {
@@ -10,5 +9,6 @@ namespace SimpleGame.GameCore.Worlds
         Chunk GetChunk(Vector2 chunkPosition);
         void OnCLose();
         IEnumerable<Chunk> GetChunksInRadius(Vector2 anchor, int chunkRenderRadius);
+        void Update(TimeSpan delta);
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SimpleGame.Graphic.Models.Templates
+namespace SimpleGame.Graphic.Models
 {
     public class Atlas
     {
