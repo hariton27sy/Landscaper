@@ -74,7 +74,7 @@ namespace SimpleGame.Graphic.Models
             var neighbour = 0;
             try
             {
-                neighbour = chunk.Map[x + dx, y + dy, z + dy];
+                neighbour = chunk.Map[x + dx, y + dy, z + dz];
             }
             catch (IndexOutOfRangeException e)
             {

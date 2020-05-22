@@ -62,35 +62,37 @@ namespace SimpleGame
             var delta = currTime - previousTime;
             
             previousTime = currTime;
-            Player.Position += Player.AbsoluteVelocity * (float) delta.TotalSeconds;
+            World.Update(delta);
+            Title = $"{Player.Position.X} {Player.Position.Y} {Player.Position.Z}";
         }
 
         private void OnKeyDown(object sender, KeyboardKeyEventArgs args)
         {
+            var speed = 20;
             switch (args.Key)
             {
                 case Key.Left:
                 case Key.A:
-                    Player.Velocity = new Vector3(Player.Velocity.X, Player.Velocity.Y, -20);
+                    Player.Velocity = new Vector3(Player.Velocity.X, Player.Velocity.Y, -speed);
                     break;
                 case Key.Right:
                 case Key.D:
-                    Player.Velocity = new Vector3(Player.Velocity.X, Player.Velocity.Y, 20);
+                    Player.Velocity = new Vector3(Player.Velocity.X, Player.Velocity.Y, speed);
                     break;
                 case Key.Up:
                 case Key.W:
-                    Player.Velocity += Vector3.UnitX;
+                    Player.Velocity = new Vector3(speed, Player.Velocity.Y, Player.Velocity.Z);
                     break;
                 case Key.Down:
                 case Key.S:
-                    Player.Velocity -= Vector3.UnitX;
+                    Player.Velocity = new Vector3(-speed, Player.Velocity.Y, Player.Velocity.Z);
                     break;
                 case Key.LShift:
                 case Key.RShift:
-                    Player.Velocity -= Vector3.UnitY;
+                    Player.Velocity = new Vector3(Player.Velocity.X, -speed, Player.Velocity.Z);
                     break;
                 case Key.Space:
-                    Player.Velocity += Vector3.UnitY;
+                    Player.Velocity = new Vector3(Player.Velocity.X, speed, Player.Velocity.Z);
                     break;
                 case Key.P:
                     CursorVisible = !CursorVisible;
@@ -117,8 +119,8 @@ namespace SimpleGame
                 case Key.S:
                     Player.Velocity = new Vector3(0, Player.Velocity.Y, Player.Velocity.Z);
                     break;
-                case Key.ControlLeft:
-                case Key.ControlRight:
+                case Key.LShift:
+                case Key.RShift:
                 case Key.Space:
                     Player.Velocity = new Vector3(Player.Velocity.X, 0, Player.Velocity.Z);
                     break;

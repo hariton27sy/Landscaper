@@ -7,6 +7,7 @@ namespace SimpleGame.GameCore.Worlds
 {
     public class OverWorld : IWorld
     {
+        private float gravity = 1;
         private Dictionary<Vector2, Chunk> chunks = new Dictionary<Vector2, Chunk>();
         
         public Chunk GetChunk(Vector2 chunkPosition)
@@ -70,7 +71,10 @@ namespace SimpleGame.GameCore.Worlds
 
         public void Update(TimeSpan delta)
         {
+            player.Velocity -= Vector3.UnitY * gravity;
             player.Position += player.AbsoluteVelocity * (float) delta.TotalSeconds;
+            if (player.Position.Y < 0)
+                player.Position = new Vector3(player.Position.X, 0, player.Position.Z);
         }
 
         public void OnCLose()
