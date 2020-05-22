@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using OpenTK;
 using SimpleGame.GameCore.Persons;
 
@@ -124,18 +125,46 @@ namespace SimpleGame.GameCore.Worlds
             this.seed = seed;
         }
 
-        private IEnumerable<Vector3> GetBlockPositionsAlongVelocityVector()
+        private Vector3? GetNearestBlock(Vector3 startPos, Vector3 delta)
         {
-            var intX = (int) player.Position.X;
-            var intY = (int) player.Position.Y;
-            var intZ = (int) player.Position.Z;
-            var dest = player.Position + player.AbsoluteVelocity;
-            var intDestX = (int) player.Position.X;
-            var intDestY = (int) player.Position.Y;
-            var intDestZ = (int) player.Position.Z;
+            
+            var normDelta = Vector3.Normalize(delta) * 0.2f;
+            var result = normDelta;
+            var prevLength = float.MaxValue;
+            while ((delta - result).Length < prevLength)
+            {
+                prevLength = (delta - result).Length;
+                if (GetBlockId(startPos + result) != -1)
+                    return startPos + result;
+                result += delta;
+            }
+            return null;
+        }
 
-
-            yield return Vector3.Zero;
+        private int GetBlockId(Vector3 position)
+        {
+            var chunkX = (int) (position.X / Chunk.Width);
+            var chunkZ = (int) (position.Z / Chunk.Length);
+            var x = (int) position.X % Chunk.Width;
+            var y = (int) position.Y;
+            var z = (int) position.Z % Chunk.Length;
+            try
+            {
+                return GetChunk(new Vector2(chunkX, chunkZ)).Map[x, y, z];
+            }
+            catch (IndexOutOfRangeException)
+            {
+                return -1;
+            }
+        }
+        
+        private void TryMove(Player person, Vector3 delta)
+        {
+            Vector3? nearest;
+            while ((nearest = GetNearestBlock(person.Position, delta)) != null)
+            {
+                
+            }
         }
     }
 }
