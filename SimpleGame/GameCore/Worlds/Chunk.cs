@@ -14,7 +14,7 @@ namespace SimpleGame.GameCore.Worlds
 
         public int[,,] Map;
 
-        public bool IsModified { get; private set; } = false;
+        public bool IsModified { get; private set; }
         private IModel model;
 
         public Chunk(Vector2 location, int[,,] map)

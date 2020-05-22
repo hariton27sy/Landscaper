@@ -60,7 +60,7 @@ namespace SimpleGame
             // Для правильного движения игрока вне зависимости от частоты вызова этого метода
             var currTime = DateTime.Now;
             var delta = currTime - previousTime;
-            
+
             previousTime = currTime;
             World.Update(delta);
             Title = $"{Player.Position.X} {Player.Position.Y} {Player.Position.Z}";
@@ -128,19 +128,9 @@ namespace SimpleGame
 
         }
 
-        private Vector2 WorldToChunkPosition(Vector2 worldPosition)
-        {
-            return new Vector2((int)(worldPosition.X / Chunk.Width), (int)(worldPosition.Y / Chunk.Length));
-        }
-
-        private Vector2 WorldToChunkPosition(Vector3 worldPosition)
-        {
-            return WorldToChunkPosition(new Vector2(worldPosition.X, worldPosition.Y));
-        }
-
         private void OnRender(object sender, FrameEventArgs args)
         {
-            var anchor = WorldToChunkPosition(Player.Position);
+            var anchor = Player.Position.ToChunkPosition();
             renderer.Clear(Color.Aqua);
             renderer.Render(Player, textures, World.GetChunksInRadius(anchor, Preferences.ChunkRenderRadius));
             SwapBuffers();

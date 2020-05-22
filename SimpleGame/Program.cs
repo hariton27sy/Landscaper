@@ -1,4 +1,5 @@
-﻿using OpenTK;
+﻿using System;
+using OpenTK;
 using SimpleGame.GameCore;
 using SimpleGame.GameCore.Persons;
 using SimpleGame.GameCore.Worlds;
@@ -12,11 +13,11 @@ namespace SimpleGame
         static void Main(string[] args)
         {
             // var renderer = new Renderer(new StaticShader());
-            
-            var player = new Player(new Vector3(5, 18, -2));
-            var world = new OverWorld(player);
+
+            var player = new Player(new Vector3(0, 32, 0));
+            var world = new OverWorld(player, new Random().Next(Int32.MaxValue));
             var window = new Game(world, player);
-            window.Run(30, 30);
+            window.Run();
         }
     }
 }

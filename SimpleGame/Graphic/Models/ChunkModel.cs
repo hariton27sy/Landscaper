@@ -89,7 +89,7 @@ namespace SimpleGame.Graphic.Models
                 return false;
             }
 
-            return neighbour != -1;
+            return neighbour != -1 && neighbour != 0;
         }
 
         private void AddBlock(int x, int y, int z)
@@ -114,6 +114,13 @@ namespace SimpleGame.Graphic.Models
                 toSee.Add(BlockEdge.Front);
             if (!HasNeighbourOn(x, y, z, BlockEdge.Back))
                 toSee.Add(BlockEdge.Back);
+
+            // toSee.Add(BlockEdge.Back);
+            // toSee.Add(BlockEdge.Front);
+            // toSee.Add(BlockEdge.Top);
+            // toSee.Add(BlockEdge.Bottom);
+            // toSee.Add(BlockEdge.Left);
+            // toSee.Add(BlockEdge.Right);
 
             foreach (var edge in toSee)
             {
