@@ -23,9 +23,11 @@ namespace SimpleGame.Graphic.Models
         private int verticesVbo;
         private int textureVbo;
         private int indicesVbo;
+        private int vao;
 
         public ChunkModel(Chunk chunk, TextureStorage storage)
         {
+            vao = GlHelper.VaoCreator();
             this.chunk = chunk;
             this.storage = storage;
             
@@ -41,6 +43,12 @@ namespace SimpleGame.Graphic.Models
                 if (chunk.Map[x, y, z] != 0)
                     AddBlock(x, y, z);
             }
+
+            GlHelper.VaoBinder(vao);
+            GlHelper.DeleteVbos(verticesVbo, indicesVbo, textureVbo);
+            indicesVbo = GlHelper.LoadIndices(indices.ToArray());
+            verticesVbo = GlHelper.LoadVbo(0, 3, vertices.ToArray());
+            textureVbo = GlHelper.LoadVbo(2, 2, textureCoords.ToArray());
         }
         
         private bool HasNeighbourOn(int x, int y, int z, BlockEdge edge)
@@ -141,9 +149,8 @@ namespace SimpleGame.Graphic.Models
             
             GL.DisableVertexAttribArray(0);
             GL.DisableVertexAttribArray(2);
-            GL.DeleteBuffer(verticesVbo);
-            GL.DeleteBuffer(textureVbo);
-            GL.DeleteBuffer(indicesVbo);
+            
+            GlHelper.VaoBinder(0);
             isDisposed = true;
         }
 
@@ -154,9 +161,7 @@ namespace SimpleGame.Graphic.Models
         {
             if (chunk.IsModified)
                 GenerateModel();
-            indicesVbo = GlHelper.LoadIndices(indices.ToArray());
-            verticesVbo = GlHelper.LoadVbo(0, 3, vertices.ToArray());
-            textureVbo = GlHelper.LoadVbo(2, 2, textureCoords.ToArray());
+            GlHelper.VaoBinder(vao);
             GL.EnableVertexAttribArray(0);
             GL.EnableVertexAttribArray(2);
             GL.BindTexture(TextureTarget.Texture2D, storage[1].AtlasGlId);
@@ -166,6 +171,8 @@ namespace SimpleGame.Graphic.Models
         ~ChunkModel()
         {
             Dispose();
+            GlHelper.VaoRemover(new []{vao});
+            GlHelper.DeleteVbos(verticesVbo, indicesVbo, textureVbo);
         }
     }
 }

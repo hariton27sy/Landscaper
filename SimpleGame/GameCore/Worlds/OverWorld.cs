@@ -7,7 +7,7 @@ namespace SimpleGame.GameCore.Worlds
 {
     public class OverWorld : IWorld
     {
-        private float gravity = 1;
+        private float gravity = 10;
         private Dictionary<Vector2, Chunk> chunks = new Dictionary<Vector2, Chunk>();
         
         public Chunk GetChunk(Vector2 chunkPosition)
@@ -71,7 +71,7 @@ namespace SimpleGame.GameCore.Worlds
 
         public void Update(TimeSpan delta)
         {
-            player.Velocity -= Vector3.UnitY * gravity;
+            player.Velocity -= Vector3.UnitY * gravity * (float)delta.TotalSeconds;
             player.Position += player.AbsoluteVelocity * (float) delta.TotalSeconds;
             if (player.Position.Y < 0)
                 player.Position = new Vector3(player.Position.X, 0, player.Position.Z);
@@ -84,6 +84,20 @@ namespace SimpleGame.GameCore.Worlds
         public OverWorld(Player player)
         {
             this.player = player;
+        }
+
+        private IEnumerable<Vector3> GetBlockPositionsAlongVelocityVector()
+        {
+            var intX = (int) player.Position.X;
+            var intY = (int) player.Position.Y;
+            var intZ = (int) player.Position.Z;
+            var dest = player.Position + player.AbsoluteVelocity;
+            var intDestX = (int) player.Position.X;
+            var intDestY = (int) player.Position.Y;
+            var intDestZ = (int) player.Position.Z;
+
+
+            yield return Vector3.Zero;
         }
     }
 }

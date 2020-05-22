@@ -59,5 +59,10 @@ namespace SimpleGame.Graphic.Models
 
             return vbo;
         }
+
+        public static void DeleteVbos(params int[] vbos)
+        {
+            GL.DeleteBuffers(vbos.Length, vbos);
+        }
     }
 }
