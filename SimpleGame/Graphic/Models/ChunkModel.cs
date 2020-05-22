@@ -18,18 +18,16 @@ namespace SimpleGame.Graphic.Models
         
         private Chunk chunk;
         private TextureStorage storage;
-        private ICamera camera;
 
         private bool isDisposed;
         private int verticesVbo;
         private int textureVbo;
         private int indicesVbo;
 
-        public ChunkModel(Chunk chunk, TextureStorage storage, ICamera camera)
+        public ChunkModel(Chunk chunk, TextureStorage storage)
         {
             this.chunk = chunk;
             this.storage = storage;
-            this.camera = camera;
             
             GenerateModel();
         }
@@ -80,10 +78,10 @@ namespace SimpleGame.Graphic.Models
             }
             catch (IndexOutOfRangeException e)
             {
-                
+                return false;
             }
 
-            return neighbour != 0;
+            return neighbour != -1;
         }
 
         private void AddBlock(int x, int y, int z)
@@ -91,58 +89,23 @@ namespace SimpleGame.Graphic.Models
             var air = -1;
             if (chunk.Map[x, y, z] == air)
                 return;
-            var looking = camera.Direction;
             var blockTexture = storage[chunk.Map[x, y, z]];
             var offset = new Vector3(x + 0.5f, y + 0.5f, z + 0.5f);
             // var offset = new Vector3(x, y, z);
             var toSee = new HashSet<BlockEdge>();
             
-            var playerRelativePosition = new Vector3(
-                camera.Position.X - chunk.Location.X * Chunk.Width + offset.X , 
-                camera.Position.Y - offset.Y, 
-                camera.Position.Z - chunk.Location.Y * Chunk.Length + offset.Z);
-            if (playerRelativePosition.X > 0)
-            {
-                if (!HasNeighbourOn(x, y, z, BlockEdge.Right))
-                    toSee.Add(BlockEdge.Right);
-            }
-            else if (playerRelativePosition.X < 0)
-            {
-                if (!HasNeighbourOn(x, y, z, BlockEdge.Left))
-                    toSee.Add(BlockEdge.Left);
-            }
-            else
-            {
-                
-            }
-            if (playerRelativePosition.Y > 0)
-            {
-                if (!HasNeighbourOn(x, y, z, BlockEdge.Top))
-                    toSee.Add(BlockEdge.Top);
-            }
-            else if (playerRelativePosition.Y < 0)
-            {
-                if (!HasNeighbourOn(x, y, z, BlockEdge.Bottom))
-                    toSee.Add(BlockEdge.Bottom);
-            }
-            else
-            {
-                
-            }
-            if (playerRelativePosition.Z > 0)
-            {
-                if (!HasNeighbourOn(x, y, z, BlockEdge.Front)) 
-                    toSee.Add(BlockEdge.Front);
-            }
-            else if (playerRelativePosition.Z < 0)
-            {
-                if (!HasNeighbourOn(x, y, z, BlockEdge.Back))
-                    toSee.Add(BlockEdge.Back);
-            }
-            else
-            {
-                
-            }
+            if (!HasNeighbourOn(x, y, z, BlockEdge.Right))
+                toSee.Add(BlockEdge.Right);
+            if (!HasNeighbourOn(x, y, z, BlockEdge.Left))
+                toSee.Add(BlockEdge.Left);
+            if (!HasNeighbourOn(x, y, z, BlockEdge.Top))
+                toSee.Add(BlockEdge.Top);
+            if (!HasNeighbourOn(x, y, z, BlockEdge.Bottom))
+                toSee.Add(BlockEdge.Bottom);
+            if (!HasNeighbourOn(x, y, z, BlockEdge.Front)) 
+                toSee.Add(BlockEdge.Front);
+            if (!HasNeighbourOn(x, y, z, BlockEdge.Back))
+                toSee.Add(BlockEdge.Back);
 
             foreach (var edge in toSee)
             {
@@ -189,6 +152,8 @@ namespace SimpleGame.Graphic.Models
         public bool IsTextured => true;
         public IModel Start()
         {
+            if (chunk.IsModified)
+                GenerateModel();
             indicesVbo = GlHelper.LoadIndices(indices.ToArray());
             verticesVbo = GlHelper.LoadVbo(0, 3, vertices.ToArray());
             textureVbo = GlHelper.LoadVbo(2, 2, textureCoords.ToArray());
