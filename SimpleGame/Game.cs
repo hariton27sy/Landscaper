@@ -44,6 +44,7 @@ namespace SimpleGame
                     Mouse.SetPosition(X + Width / 2f, Y + Height / 2f);
             };
             renderer.Aspect = (float) Width / Height;
+            previousTime = DateTime.Now;
         }
 
         public void UpdateState(object sendet, FrameEventArgs args)

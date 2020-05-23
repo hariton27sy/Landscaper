@@ -46,7 +46,7 @@ namespace SimpleGame.GameCore.Worlds
                     var normalisedNoise = (noise + 1) / 2;
                     var height = (int)(normalisedNoise / 5 * Chunk.Height) + 50;
 
-                    Console.WriteLine($"{x} {z} ({chunkPosition} => {position}) {height}");
+                    // Console.WriteLine($"{x} {z} ({chunkPosition} => {position}) {height}");
                     var block = grass;
                     if (height < sandLevel)
                     {
@@ -110,9 +110,10 @@ namespace SimpleGame.GameCore.Worlds
         public void Update(TimeSpan delta)
         {
             player.Velocity -= Vector3.UnitY * gravity * (float)delta.TotalSeconds;
-            player.Position += player.AbsoluteVelocity * (float) delta.TotalSeconds;
-            if (player.Position.Y < 0)
-                player.Position = new Vector3(player.Position.X, 0, player.Position.Z);
+            // player.Position += player.AbsoluteVelocity * (float) delta.TotalSeconds;
+            TryMove(player, player.AbsoluteVelocity * (float)delta.TotalSeconds);
+            // if (player.Position.Y < 0)
+            //     player.Position = new Vector3(player.Position.X, 0, player.Position.Z);
         }
 
         public void OnCLose()
@@ -130,12 +131,15 @@ namespace SimpleGame.GameCore.Worlds
             
             var normDelta = Vector3.Normalize(delta) * 0.2f;
             var result = normDelta;
-            var prevLength = float.MaxValue;
+            var prevLength = delta.Length;
             while ((delta - result).Length < prevLength)
             {
                 prevLength = (delta - result).Length;
-                if (GetBlockId(startPos + result) != -1)
-                    return startPos + result;
+                if (GetBlockId(startPos + result) != 0)
+                {
+                    result = startPos + result;
+                    return new Vector3((int) result.X, (int) result.Y, (int) result.Z);
+                }
                 result += delta;
             }
             return null;
@@ -154,17 +158,60 @@ namespace SimpleGame.GameCore.Worlds
             }
             catch (IndexOutOfRangeException)
             {
-                return -1;
+                return 0;
             }
         }
         
         private void TryMove(Player person, Vector3 delta)
         {
             Vector3? nearest;
-            while ((nearest = GetNearestBlock(person.Position, delta)) != null)
+            Vector3 prevNearest = Vector3.Zero;
+            while ((nearest = GetNearestBlock(person.Position, delta)) != null && prevNearest != nearest)
             {
-                
+                Console.WriteLine($"Nearest {nearest}");
+                delta = CorrectDelta(player.Position, delta, (Vector3) nearest);
+                prevNearest = (Vector3)nearest;
             }
+
+            person.Position += delta;
+        }
+
+        private Vector3 CorrectDelta(Vector3 startPos, Vector3 delta, Vector3 blockPos)
+        {
+            var x = blockPos.X;
+            var y = startPos.Y +  delta.Y / delta.X * (x - startPos.X);
+            var z = startPos.Z + delta.Z / delta.X * (x - startPos.X);
+            if (delta.X > 0 && (int)y == (int) blockPos.Y && (int) z == (int) blockPos.Z)
+                return new Vector3(x - startPos.X, delta.Y, delta.Z);
+            x = x + 1;
+            y = startPos.Y +  delta.Y / delta.X * (x - startPos.X);
+            z = startPos.Z + delta.Z / delta.X * (x - startPos.X);
+            if (delta.X < 0 && (int) y == (int) blockPos.Y && (int) z == (int) blockPos.Z)
+                return new Vector3(x - startPos.X, delta.Y, delta.Z);
+            
+            y = blockPos.Y;
+            x = startPos.X +  delta.X / delta.Y * (y - startPos.Y);
+            z = startPos.Z +  delta.Z / delta.Y * (y - startPos.Y);
+            if (delta.Y > 0 && (int)x == (int) blockPos.X && (int) z == (int) blockPos.Z)
+                return new Vector3(delta.X, y - startPos.Y, delta.Z);
+            y = y + 1;
+            x = startPos.X +  delta.X / delta.Y * (y - startPos.Y);
+            z = startPos.Z +  delta.Z / delta.Y * (y - startPos.Y);
+            if (delta.Y < 0 && (int) x == (int) blockPos.X && (int) z == (int) blockPos.Z)
+                return new Vector3(delta.X, y - startPos.Y, delta.Z);
+            
+            z = blockPos.Z;
+            x = startPos.X +  delta.X / delta.Z * (z - startPos.Z);
+            y = startPos.Y +  delta.Y / delta.Z * (z - startPos.Z);
+            if (delta.Z > 0 && (int)x == (int) blockPos.X && (int) y == (int) blockPos.Y)
+                return new Vector3(delta.X, delta.Y, z - startPos.Z);
+            z = z + 1;
+            x = startPos.X +  delta.X / delta.Z * (z - startPos.Z);
+            y = startPos.Y +  delta.Y / delta.Z * (z - startPos.Z);
+            if (delta.Z < 0 && (int) x == (int) blockPos.X && (int) y == (int) blockPos.Y)
+                return new Vector3(delta.X, delta.Y, z - startPos.Z);
+
+            return delta;
         }
     }
 }
