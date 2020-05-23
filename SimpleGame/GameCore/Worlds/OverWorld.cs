@@ -9,7 +9,7 @@ namespace SimpleGame.GameCore.Worlds
 {
     public class OverWorld : IWorld
     {
-        private float gravity = 0;
+        private float gravity = 10;
         private Dictionary<Vector2, Chunk> chunks = new Dictionary<Vector2, Chunk>();
         private int seed; 
         
@@ -178,38 +178,39 @@ namespace SimpleGame.GameCore.Worlds
 
         private Vector3 CorrectDelta(Vector3 startPos, Vector3 delta, Vector3 blockPos)
         {
+            var epsilon = 0.2f;
             var x = blockPos.X;
             var y = startPos.Y +  delta.Y / delta.X * (x - startPos.X);
             var z = startPos.Z + delta.Z / delta.X * (x - startPos.X);
             if (delta.X > 0 && (int)y == (int) blockPos.Y && (int) z == (int) blockPos.Z)
-                return new Vector3(x - startPos.X, delta.Y, delta.Z);
+                return new Vector3(x - startPos.X - epsilon, delta.Y, delta.Z);
             x = x + 1;
             y = startPos.Y +  delta.Y / delta.X * (x - startPos.X);
             z = startPos.Z + delta.Z / delta.X * (x - startPos.X);
             if (delta.X < 0 && (int) y == (int) blockPos.Y && (int) z == (int) blockPos.Z)
-                return new Vector3(x - startPos.X, delta.Y, delta.Z);
+                return new Vector3(x - startPos.X + epsilon, delta.Y, delta.Z);
             
             y = blockPos.Y;
             x = startPos.X +  delta.X / delta.Y * (y - startPos.Y);
             z = startPos.Z +  delta.Z / delta.Y * (y - startPos.Y);
             if (delta.Y > 0 && (int)x == (int) blockPos.X && (int) z == (int) blockPos.Z)
-                return new Vector3(delta.X, y - startPos.Y, delta.Z);
+                return new Vector3(delta.X, y - startPos.Y - epsilon, delta.Z);
             y = y + 1;
             x = startPos.X +  delta.X / delta.Y * (y - startPos.Y);
             z = startPos.Z +  delta.Z / delta.Y * (y - startPos.Y);
             if (delta.Y < 0 && (int) x == (int) blockPos.X && (int) z == (int) blockPos.Z)
-                return new Vector3(delta.X, y - startPos.Y, delta.Z);
+                return new Vector3(delta.X, y - startPos.Y + epsilon, delta.Z);
             
             z = blockPos.Z;
             x = startPos.X +  delta.X / delta.Z * (z - startPos.Z);
             y = startPos.Y +  delta.Y / delta.Z * (z - startPos.Z);
             if (delta.Z > 0 && (int)x == (int) blockPos.X && (int) y == (int) blockPos.Y)
-                return new Vector3(delta.X, delta.Y, z - startPos.Z);
+                return new Vector3(delta.X, delta.Y, z - startPos.Z - epsilon);
             z = z + 1;
             x = startPos.X +  delta.X / delta.Z * (z - startPos.Z);
             y = startPos.Y +  delta.Y / delta.Z * (z - startPos.Z);
             if (delta.Z < 0 && (int) x == (int) blockPos.X && (int) y == (int) blockPos.Y)
-                return new Vector3(delta.X, delta.Y, z - startPos.Z);
+                return new Vector3(delta.X, delta.Y, z - startPos.Z + epsilon);
 
             return delta;
         }
