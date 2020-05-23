@@ -1,18 +1,19 @@
 using System;
+using System.Collections.Generic;
+using OpenTK.Platform.Windows;
 
 namespace SimpleGame.GameCore.Worlds
 {
     public class NoiseGenerator
     {
-        public int Seed { get; private set; }
-
-        public int Octaves { get; set; }
-
-        public double Amplitude { get; set; }
-
-        public double Persistence { get; set; }
-
-        public double Frequency { get; set; }
+        private int Seed { get; }
+        private int Octaves { get; }
+        private double Amplitude { get; }
+        private double Persistence { get; }
+        private double Frequency { get; }
+        
+        public delegate double Smooth(double x, double y);
+        private readonly Smooth smooth;
 
         public NoiseGenerator(int seed, int octaves = 8, double amplitude = 1, double persistence = 0.65, double frequency = 0.015)
         {
@@ -21,16 +22,23 @@ namespace SimpleGame.GameCore.Worlds
             Amplitude = amplitude;
             Persistence = persistence;
             Frequency = frequency;
+
+            smooth = CrossSmooth;
         }
 
         public double Noise(int x, int y)
         {
-            //returns -1 to 1
+            // todo func smoothness on negative values 
+            // x = Math.Abs(x);
+            // y = Math.Abs(y);
+            x += 1600;
+            y += 1600;
+            
             double total = 0.0;
             double freq = Frequency, amp = Amplitude;
-            for (int i = 0; i < Octaves; ++i)
+            for (var i = 0; i < Octaves; ++i)
             {
-                total = total + Smooth(x * freq, y * freq) * amp;
+                total += smooth(x * freq, y * freq) * amp;
                 freq *= 2;
                 amp *= Persistence;
             }
@@ -53,18 +61,48 @@ namespace SimpleGame.GameCore.Worlds
             double value = (1 - Math.Cos(a * Math.PI)) * 0.5;
             return x * (1 - value) + y * value;
         }
-
-        private double Smooth(double x, double y)
+        
+        public double CrossSmooth(double x, double y)
         {
-            double n1 = NoiseGeneration((int)x, (int)y);
-            double n2 = NoiseGeneration((int)x + 1, (int)y);
-            double n3 = NoiseGeneration((int)x, (int)y + 1);
-            double n4 = NoiseGeneration((int)x + 1, (int)y + 1);
+            var ix = (int)x;
+            var iy = (int)y;
+            var n1 = NoiseGeneration(ix, iy);
+            var n2 = NoiseGeneration(ix + 1, iy);
+            var n3 = NoiseGeneration(ix, iy + 1);
+            var n4 = NoiseGeneration(ix + 1, iy + 1);
 
-            double i1 = Interpolate(n1, n2, x - (int)x);
-            double i2 = Interpolate(n3, n4, x - (int)x);
+            var i1 = Interpolate(n1, n2, x - ix);
+            var i2 = Interpolate(n3, n4, x - ix);
 
-            return Interpolate(i1, i2, y - (int)y);
+            return Interpolate(i1, i2, y - iy);
+        }
+
+        public double SquareSmooth(double x, double y)
+        {
+            var ix = (int)x;
+            var iy = (int)y;
+            var n1 = NoiseGeneration(ix - 1, iy - 1);
+            var n2 = NoiseGeneration(ix - 1, iy);
+            
+            var n3 = NoiseGeneration(ix - 1, iy + 1);
+            var n6 = NoiseGeneration(ix    , iy + 1);
+            
+            var n4 = NoiseGeneration(ix    , iy - 1);
+            var n7 = NoiseGeneration(ix + 1, iy - 1);
+            
+            var n8 = NoiseGeneration(ix + 1, iy);
+            var n9 = NoiseGeneration(ix + 1, iy + 1);
+
+            var i1 = Interpolate(n1, n2, x - ix);
+            var i2 = Interpolate(n3, n6, x - ix);
+            var i3 = Interpolate(n4, n7, x - ix);
+            var i4 = Interpolate(n8, n9, x - ix);
+            
+            var i11 = Interpolate(i1, i2, y - iy);
+            var i12 = Interpolate(i3, i4, y - iy);
+            
+            
+            return Interpolate(i11, i12, y - iy);
         }
     }
 }

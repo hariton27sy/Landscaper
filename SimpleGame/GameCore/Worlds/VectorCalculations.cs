@@ -14,6 +14,10 @@ namespace SimpleGame.GameCore.Worlds
             return ToChunkPosition(new Vector2(worldPosition.X, worldPosition.Z));
         }
 
+        public static Vector2 InWorldShift(this Vector2 chunkPosition)
+        {
+            return new Vector2(chunkPosition.X * Chunk.Width, chunkPosition.Y * Chunk.Length);
+        }
         public static Vector2 InWorldPosition(this Vector2 inChunk, Vector2 chunkPosition)
         {
             return new Vector2(inChunk.X + chunkPosition.X * Chunk.Width, inChunk.Y + chunkPosition.Y * Chunk.Length);
