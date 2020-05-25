@@ -14,14 +14,14 @@ namespace SimpleGame.GameCore.Worlds
 
         public int[,,] Map;
 
-        public bool IsModified { get; private set; }
+        public bool IsModified { get; set; }
         private IModel model;
 
         public Chunk(Vector2 location, int[,,] map)
         {
             Location = location;
             Map = map;
-            
+            IsModified = true;
         }
 
         public IModel GetModel(TextureStorage storage, ICamera camera)

@@ -133,7 +133,8 @@ namespace SimpleGame
         {
             var anchor = Player.Position.ToChunkPosition();
             renderer.Clear(Color.Aqua);
-            renderer.Render(Player, textures, World.GetChunksInRadius(anchor, Preferences.ChunkRenderRadius));
+            var entities = World.GetChunksInRadius(anchor, Preferences.ChunkRenderRadius);
+            renderer.Render(Player, textures, entities);
             SwapBuffers();
         }
     }

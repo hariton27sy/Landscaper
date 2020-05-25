@@ -117,7 +117,7 @@ namespace SimpleGame.Graphic.Models
 
             // toSee.Add(BlockEdge.Back);
             // toSee.Add(BlockEdge.Front);
-            // toSee.Add(BlockEdge.Top);
+            toSee.Add(BlockEdge.Top);
             // toSee.Add(BlockEdge.Bottom);
             // toSee.Add(BlockEdge.Left);
             // toSee.Add(BlockEdge.Right);
@@ -167,7 +167,11 @@ namespace SimpleGame.Graphic.Models
         public IModel Start()
         {
             if (chunk.IsModified)
+            {
                 GenerateModel();
+                chunk.IsModified = false;
+            }
+
             GlHelper.VaoBinder(vao);
             GL.EnableVertexAttribArray(0);
             GL.EnableVertexAttribArray(2);
