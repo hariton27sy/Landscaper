@@ -88,8 +88,9 @@ namespace SimpleGame.GameCore.Worlds
             //         }
             //     }
             // }
-
-            return result;
+#region Comment From Github Maybe should delete
+//            return result;
+#endregion            
         }
 
         private Func<Vector2, float, bool> IsInCircle = (d, r) => d.X*d.X + d.Y*d.Y <= r*r;
