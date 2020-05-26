@@ -10,31 +10,15 @@ namespace SimpleGame.GameCore.Worlds
     public class OverWorld : IWorld
     {
         private float gravity = 0;
-        private Dictionary<Vector2, Chunk> chunks = new Dictionary<Vector2, Chunk>();
         private TerrainGenerator terrainGenerator;
+        
+        private Player player;
 
         public Chunk GetChunk(Vector2 chunkPosition)
         {
-            if (chunks.TryGetValue(chunkPosition, out var chunk))
-                return chunk;
-            chunk = new Chunk(chunkPosition, GenerateNewChunk(chunkPosition));
-            chunks.Add(chunkPosition, chunk);
-            Console.WriteLine($"chunk genereted {chunkPosition}");
-            return chunk;
+            return terrainGenerator.GetChunk(chunkPosition);
         }
-
-        private int[,,] GenerateNewChunk(Vector2 chunkPosition)
-        {
-            return terrainGenerator.GenerateChunk(chunkPosition);
-        }
-
-        private bool IsInCircle(Vector2 anchor, Vector2 offset, float r)
-        {
-            return (anchor.X - offset.X) * (anchor.X - offset.X) + (anchor.Y - offset.Y) * (anchor.Y - offset.Y) <= r * r;
-        }
-
-        private Player player;
-
+        
         public IEnumerable<Chunk> GetChunksInRadius(Vector2 anchor, int chunkRenderRadius)
         {
             for (int dx = -chunkRenderRadius; dx <= chunkRenderRadius; dx++)
@@ -55,14 +39,10 @@ namespace SimpleGame.GameCore.Worlds
             //     player.Position = new Vector3(player.Position.X, 0, player.Position.Z);
         }
 
-        public void OnCLose()
-        {
-        }
-
-        public OverWorld(Player player, TerrainGenerator terrainGenerator)
+        public OverWorld(Player player, int seed)
         {
             this.player = player;
-            this.terrainGenerator = terrainGenerator;
+            terrainGenerator = new TerrainGenerator(seed);
         }
 
         private Vector3? GetNearestBlock(Vector3 startPos, Vector3 delta)

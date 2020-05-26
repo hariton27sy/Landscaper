@@ -89,12 +89,12 @@ namespace SimpleGame.Graphic.Models
                 return false;
             }
 
-            return neighbour != -1 && neighbour != 0;
+            return neighbour != 0;
         }
 
         private void AddBlock(int x, int y, int z)
         {
-            var air = -1;
+            const int air = 0;
             if (chunk.Map[x, y, z] == air)
                 return;
             var blockTexture = storage[chunk.Map[x, y, z]];
@@ -117,7 +117,7 @@ namespace SimpleGame.Graphic.Models
 
             // toSee.Add(BlockEdge.Back);
             // toSee.Add(BlockEdge.Front);
-            toSee.Add(BlockEdge.Top);
+            // toSee.Add(BlockEdge.Top);
             // toSee.Add(BlockEdge.Bottom);
             // toSee.Add(BlockEdge.Left);
             // toSee.Add(BlockEdge.Right);

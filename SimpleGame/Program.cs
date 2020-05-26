@@ -16,8 +16,7 @@ namespace SimpleGame
 
             var player = new Player(new Vector3(1, 100, 1));
             var seed = new Random().Next(Int32.MaxValue);
-            var terrainGenerator = new TerrainGenerator(seed);
-            var world = new OverWorld(player, terrainGenerator);
+            var world = new OverWorld(player, seed);
             var window = new Game(world, player);
             window.Run();
         }
