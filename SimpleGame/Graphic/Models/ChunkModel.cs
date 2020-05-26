@@ -28,7 +28,6 @@ namespace SimpleGame.Graphic.Models
 
         public ChunkModel(Chunk chunk, TextureStorage storage)
         {
-            Console.WriteLine(vao);
             this.chunk = chunk;
             this.storage = storage;
             

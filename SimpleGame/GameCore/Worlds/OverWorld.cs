@@ -30,7 +30,7 @@ namespace SimpleGame.GameCore.Worlds
                 var translation = new Vector2(dx, dy);
                 // yield return Task.Run(() => GetChunk(anchor + translation));
                 var chunk = GetChunk(anchor + translation);
-                Console.WriteLine(chunk);
+                // Console.WriteLine(chunk);
                 if (chunk != null)
                     yield return chunk;
             }
@@ -79,7 +79,8 @@ namespace SimpleGame.GameCore.Worlds
             var z = (int) position.Z % Chunk.Length;
             try
             {
-                return GetChunk(new Vector2(chunkX, chunkZ)).Map[x, y, z];
+                var chunk = GetChunk(new Vector2(chunkX, chunkZ));
+                return chunk is null ? 1 : GetChunk(new Vector2(chunkX, chunkZ)).Map[x, y, z];
             }
             catch (IndexOutOfRangeException)
             {

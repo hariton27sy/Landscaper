@@ -134,12 +134,10 @@ namespace SimpleGame.GameCore.Worlds
                 if (chunks.TryGetValue(chunkPosition, out var chunk))
                     return chunk;
             }
-
-            Console.WriteLine("Chunk generation started");
             
             if (!generatingChunks.ContainsKey(chunkPosition))
                 generatingChunks[chunkPosition] = Task.Run(() => GenerateNewChunk(chunkPosition, storage));
-            Console.WriteLine("Returning null");
+            
             return null;
         }
         
