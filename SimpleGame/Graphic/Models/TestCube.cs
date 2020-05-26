@@ -105,6 +105,11 @@ namespace SimpleGame.Graphic.Models
             GL.EnableVertexAttribArray(2);
             return this;
         }
+
+        public void UpdateModel()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 
 }

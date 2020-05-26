@@ -18,6 +18,7 @@ namespace SimpleGame.Graphic.Models
         
         private Chunk chunk;
         private TextureStorage storage;
+        private bool shouldLoadToGl;
 
         private bool isDisposed;
         private int verticesVbo;
@@ -27,14 +28,14 @@ namespace SimpleGame.Graphic.Models
 
         public ChunkModel(Chunk chunk, TextureStorage storage)
         {
-            vao = GlHelper.VaoCreator();
+            
             this.chunk = chunk;
             this.storage = storage;
             
-            GenerateModel();
+            UpdateModel();
         }
 
-        private void GenerateModel()
+        public void UpdateModel()
         {
             for (var y = 0; y < Chunk.Height; y++)
             for (var x = 0; x < Chunk.Width; x++)
@@ -44,6 +45,14 @@ namespace SimpleGame.Graphic.Models
                     AddBlock(x, y, z);
             }
 
+            shouldLoadToGl = true;
+        }
+
+        private void LoadToVideoCard()
+        {
+            if (vao == -1)
+                vao = GlHelper.VaoCreator();
+            
             GlHelper.VaoBinder(vao);
             GlHelper.DeleteVbos(verticesVbo, indicesVbo, textureVbo);
             indicesVbo = GlHelper.LoadIndices(indices.ToArray());
@@ -166,10 +175,10 @@ namespace SimpleGame.Graphic.Models
         public bool IsTextured => true;
         public IModel Start()
         {
-            if (chunk.IsModified)
+            if (shouldLoadToGl)
             {
-                GenerateModel();
-                chunk.IsModified = false;
+                LoadToVideoCard();
+                shouldLoadToGl = false;
             }
 
             GlHelper.VaoBinder(vao);

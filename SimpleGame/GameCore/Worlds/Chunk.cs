@@ -1,3 +1,4 @@
+using System.IO;
 using OpenTK;
 using SimpleGame.Graphic;
 using SimpleGame.Graphic.Models;
@@ -14,7 +15,20 @@ namespace SimpleGame.GameCore.Worlds
 
         public int[,,] Map;
 
-        public bool IsModified { get; set; }
+        public bool IsModified
+        {
+            get => isModified;
+            set
+            {
+                isModified = value;
+                if (value)
+                    model?.UpdateModel();
+                isModified = false;
+            }
+        }
+
+        private bool isModified;
+        
         private IModel model;
 
         public Chunk(Vector2 location, int[,,] map)
