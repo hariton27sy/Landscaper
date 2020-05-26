@@ -10,7 +10,9 @@ namespace SimpleGame.Graphic.Models
         int VerticesCount { get; }
         
         bool IsTextured { get; }
-        
+
         IModel Start();
+
+        void UpdateModel();
     }
 }
