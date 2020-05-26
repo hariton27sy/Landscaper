@@ -5,6 +5,7 @@ using System.IO;
 using System.Threading.Tasks;
 using OpenTK;
 using OpenTK.Graphics.ES20;
+using SimpleGame.Graphic.Models;
 
 namespace SimpleGame.GameCore.Worlds
 {
@@ -125,24 +126,23 @@ namespace SimpleGame.GameCore.Worlds
             return result;
         }
 
-        public Chunk GetChunk(Vector2 chunkPosition)
+        public Chunk GetChunk(Vector2 chunkPosition, TextureStorage storage)
         {
-            
             lock (lockobj)
             {
                 if (chunks.TryGetValue(chunkPosition, out var chunk))
-                    return chunk;   
+                    return chunk;
             }
 
             Console.WriteLine("Chunk generation started");
-            Task.Run(() => GenerateNewChunk(chunkPosition));
+            Task.Run(() => GenerateNewChunk(chunkPosition, storage));
             Console.WriteLine("Returning null");
             return null;
         }
         
-        private void GenerateNewChunk(Vector2 chunkPosition)
+        private void GenerateNewChunk(Vector2 chunkPosition, TextureStorage storage)
         {
-            var chunk = new Chunk(chunkPosition, GenerateChunk(chunkPosition));
+            var chunk = new Chunk(chunkPosition, GenerateChunk(chunkPosition), storage);
             foreach (var environmentGenerator in environmentGenerators)
             {
                 environmentGenerator.AddEnvironment(chunk);   

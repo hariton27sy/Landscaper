@@ -31,10 +31,11 @@ namespace SimpleGame.GameCore.Worlds
         
         private IModel model;
 
-        public Chunk(Vector2 location, int[,,] map)
+        public Chunk(Vector2 location, int[,,] map, TextureStorage storage)
         {
             Location = location;
             Map = map;
+            model = new ChunkModel(this, storage);
             IsModified = true;
         }
 

@@ -34,6 +34,7 @@ namespace SimpleGame
 
         private void OnLoad(object sender, EventArgs e)
         {
+            World.TextureStorage = textures;
             renderer = new Renderer(new StaticShader());
             KeyDown += OnKeyDown;
             KeyUp += OnKeyUp;

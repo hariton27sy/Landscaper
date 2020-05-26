@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using OpenTK;
 using SimpleGame.GameCore.Persons;
+using SimpleGame.Graphic.Models;
 
 namespace SimpleGame.GameCore.Worlds
 {
@@ -14,10 +15,11 @@ namespace SimpleGame.GameCore.Worlds
         private TerrainGenerator terrainGenerator;
         
         private Player player;
+        public TextureStorage TextureStorage { get; set; }
 
         public Chunk GetChunk(Vector2 chunkPosition)
         {
-            return terrainGenerator.GetChunk(chunkPosition);
+            return terrainGenerator.GetChunk(chunkPosition, TextureStorage);
         }
         
         public IEnumerable<Chunk> GetChunksInRadius(Vector2 anchor, int chunkRenderRadius)
