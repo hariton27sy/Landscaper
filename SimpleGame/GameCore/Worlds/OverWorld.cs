@@ -20,14 +20,17 @@ namespace SimpleGame.GameCore.Worlds
             return terrainGenerator.GetChunk(chunkPosition);
         }
         
-        public async IAsyncEnumerable<Chunk> GetChunksInRadius(Vector2 anchor, int chunkRenderRadius)
+        public IEnumerable<Chunk> GetChunksInRadius(Vector2 anchor, int chunkRenderRadius)
         {
             for (int dx = -chunkRenderRadius; dx <= chunkRenderRadius; dx++)
             for (int dy = -chunkRenderRadius; dy <= chunkRenderRadius; dy++)
             {
                 var translation = new Vector2(dx, dy);
-                yield return await Task.Run(() => GetChunk(anchor + translation));
-                // yield return GetChunk(anchor + translation);
+                // yield return Task.Run(() => GetChunk(anchor + translation));
+                var chunk = GetChunk(anchor + translation);
+                Console.WriteLine(chunk);
+                if (chunk != null)
+                    yield return chunk;
             }
 
         }

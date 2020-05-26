@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Threading.Tasks;
 using OpenTK;
 using OpenTK.Graphics.ES20;
 
@@ -14,10 +15,13 @@ namespace SimpleGame.GameCore.Worlds
         private List<IEnvironmentGenerator> environmentGenerators;
         
         private Dictionary<Vector2, Chunk> chunks = new Dictionary<Vector2, Chunk>();
-        
+
+        private object lockobj;
+
         public delegate double GetNoise(int x, int y);
         public TerrainGenerator(int seed)
         {
+            this.lockobj = new object();
             surfaceGenerator = new NoiseGenerator(seed, 4);
             biomeGenerator = new NoiseGenerator(seed, 5);
             
@@ -123,15 +127,31 @@ namespace SimpleGame.GameCore.Worlds
 
         public Chunk GetChunk(Vector2 chunkPosition)
         {
-            if (chunks.TryGetValue(chunkPosition, out var chunk))
-                return chunk;
-            chunk = new Chunk(chunkPosition, GenerateChunk(chunkPosition));
+            
+            lock (lockobj)
+            {
+                if (chunks.TryGetValue(chunkPosition, out var chunk))
+                    return chunk;   
+            }
+
+            Console.WriteLine("Chunk generation started");
+            Task.Run(() => GenerateNewChunk(chunkPosition));
+            Console.WriteLine("Returning null");
+            return null;
+        }
+        
+        private void GenerateNewChunk(Vector2 chunkPosition)
+        {
+            var chunk = new Chunk(chunkPosition, GenerateChunk(chunkPosition));
             foreach (var environmentGenerator in environmentGenerators)
             {
                 environmentGenerator.AddEnvironment(chunk);   
             }
-            chunks.Add(chunkPosition, chunk);
-            return chunk;
+
+            lock (lockobj)
+            {
+                chunks.Add(chunkPosition, chunk);
+            }
         }
     }
 }

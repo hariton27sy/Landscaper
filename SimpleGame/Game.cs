@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using OpenTK;
 using OpenTK.Input;
 using SimpleGame.GameCore;
@@ -135,6 +136,7 @@ namespace SimpleGame
             renderer.Clear(Color.Aqua);
             var entities = World.GetChunksInRadius(anchor, Preferences.ChunkRenderRadius);
             renderer.Render(Player, textures, entities);
+
             SwapBuffers();
         }
     }

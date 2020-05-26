@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Threading;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using SimpleGame.Graphic.Models;
@@ -47,13 +48,14 @@ namespace SimpleGame.Graphic
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
         }
 
-        public async void Render(ICamera camera, TextureStorage storage, IAsyncEnumerable<IEntity> entities)
+        public void Render(ICamera camera, TextureStorage storage, IEnumerable<IEntity> entities)
         {
             using (shader.Start())
             {
-                await foreach (var entity in entities)
+                foreach (var entity in entities)
                 {
-                    var model = entity.GetModel(storage, camera);
+                    IModel model;
+                        model = entity.GetModel(storage, camera);
                     using (model.Start())
                     {
                         shader.IsTextured = model.IsTextured;

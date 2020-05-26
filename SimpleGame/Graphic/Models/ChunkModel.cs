@@ -28,6 +28,7 @@ namespace SimpleGame.Graphic.Models
         public ChunkModel(Chunk chunk, TextureStorage storage)
         {
             vao = GlHelper.VaoCreator();
+            Console.WriteLine(vao);
             this.chunk = chunk;
             this.storage = storage;
             
