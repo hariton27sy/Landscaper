@@ -55,5 +55,11 @@ namespace SimpleGame.GameCore.Persons
                 return Vector3.Normalize(front);
             }
         }
+        
+        public BoundaryBox BoundaryBox  => new BoundaryBox
+        {
+            Start = Position - new Vector3(0.5f, 1.5f, 0.5f),
+            End = Position + new Vector3(0.5f, 0.5f, 0.5f)
+        };
     }
 }

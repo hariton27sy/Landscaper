@@ -45,7 +45,7 @@ namespace SimpleGame.GameCore.Worlds
             terrainGenerator = new TerrainGenerator(seed);
         }
 
-        private Vector3? GetNearestBlock(Vector3 startPos, Vector3 delta)
+        private BoundaryBox? GetNearestBlock(Vector3 startPos, Vector3 delta)
         {
             
             var normDelta = Vector3.Normalize(delta) * 0.2f;
@@ -57,7 +57,11 @@ namespace SimpleGame.GameCore.Worlds
                 if (GetBlockId(startPos + result) != 0)
                 {
                     result = startPos + result;
-                    return new Vector3((int) result.X, (int) result.Y, (int) result.Z);
+                    return new BoundaryBox
+                    {
+                        Start = new Vector3((int) result.X, (int) result.Y, (int) result.Z),
+                        End = new Vector3((int) result.X + 1, (int) result.Y + 1, (int) result.Z + 1)
+                    };
                 }
                 result += delta;
             }
@@ -83,53 +87,25 @@ namespace SimpleGame.GameCore.Worlds
         
         private void TryMove(Player person, Vector3 delta)
         {
-            Vector3? nearest;
-            Vector3 prevNearest = Vector3.Zero;
-            while ((nearest = GetNearestBlock(person.Position, delta)) != null && prevNearest != nearest)
+            BoundaryBox? nearest;
+            var prevNearest = new BoundaryBox();
+            while ((nearest = GetNearestBlock(person.Position, delta)) != null && 
+                   !((BoundaryBox) nearest).Equals(prevNearest))
             {
                 // Console.WriteLine($"Nearest {nearest}");
-                delta = CorrectDelta(player.Position, delta, (Vector3) nearest);
-                prevNearest = (Vector3)nearest;
+                var correctDelta = CorrectDelta(player.BoundaryBox, delta, (BoundaryBox) nearest);
+                if (Math.Abs(correctDelta.Y - delta.Y) > 1e-10)
+                        person.Velocity = new Vector3(person.Velocity.X, 0, person.Velocity.Z);
+                delta = correctDelta;
             }
 
             person.Position += delta;
         }
 
-        private Vector3 CorrectDelta(Vector3 startPos, Vector3 delta, Vector3 blockPos)
+        private Vector3 CorrectDelta(BoundaryBox startPos, Vector3 delta, BoundaryBox blockPos)
         {
             var epsilon = 0.2f;
-            var x = blockPos.X;
-            var y = startPos.Y +  delta.Y / delta.X * (x - startPos.X);
-            var z = startPos.Z + delta.Z / delta.X * (x - startPos.X);
-            if (delta.X > 0 && (int)y == (int) blockPos.Y && (int) z == (int) blockPos.Z)
-                return new Vector3(x - startPos.X - epsilon, delta.Y, delta.Z);
-            x = x + 1;
-            y = startPos.Y +  delta.Y / delta.X * (x - startPos.X);
-            z = startPos.Z + delta.Z / delta.X * (x - startPos.X);
-            if (delta.X < 0 && (int) y == (int) blockPos.Y && (int) z == (int) blockPos.Z)
-                return new Vector3(x - startPos.X + epsilon, delta.Y, delta.Z);
             
-            y = blockPos.Y;
-            x = startPos.X +  delta.X / delta.Y * (y - startPos.Y);
-            z = startPos.Z +  delta.Z / delta.Y * (y - startPos.Y);
-            if (delta.Y > 0 && (int)x == (int) blockPos.X && (int) z == (int) blockPos.Z)
-                return new Vector3(delta.X, y - startPos.Y - epsilon, delta.Z);
-            y = y + 1;
-            x = startPos.X +  delta.X / delta.Y * (y - startPos.Y);
-            z = startPos.Z +  delta.Z / delta.Y * (y - startPos.Y);
-            if (delta.Y < 0 && (int) x == (int) blockPos.X && (int) z == (int) blockPos.Z)
-                return new Vector3(delta.X, y - startPos.Y + epsilon, delta.Z);
-            
-            z = blockPos.Z;
-            x = startPos.X +  delta.X / delta.Z * (z - startPos.Z);
-            y = startPos.Y +  delta.Y / delta.Z * (z - startPos.Z);
-            if (delta.Z > 0 && (int)x == (int) blockPos.X && (int) y == (int) blockPos.Y)
-                return new Vector3(delta.X, delta.Y, z - startPos.Z - epsilon);
-            z = z + 1;
-            x = startPos.X +  delta.X / delta.Z * (z - startPos.Z);
-            y = startPos.Y +  delta.Y / delta.Z * (z - startPos.Z);
-            if (delta.Z < 0 && (int) x == (int) blockPos.X && (int) y == (int) blockPos.Y)
-                return new Vector3(delta.X, delta.Y, z - startPos.Z + epsilon);
 
             return delta;
         }
