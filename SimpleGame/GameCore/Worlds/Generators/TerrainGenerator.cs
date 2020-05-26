@@ -149,6 +149,8 @@ namespace SimpleGame.GameCore.Worlds
                 environmentGenerator.AddEnvironment(chunk);   
             }
 
+            chunk.IsModified = true;
+
             lock (lockobj)
             {
                 chunks.Add(chunkPosition, chunk);
