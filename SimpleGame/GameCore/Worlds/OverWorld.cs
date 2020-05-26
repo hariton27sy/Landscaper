@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using Microsoft.VisualBasic;
 using OpenTK;
 using SimpleGame.GameCore.Persons;
 
@@ -45,7 +46,7 @@ namespace SimpleGame.GameCore.Worlds
             terrainGenerator = new TerrainGenerator(seed);
         }
 
-        private BoundaryBox? GetNearestBlock(Vector3 startPos, Vector3 delta)
+        private BoundaryBox? GetNearestBlock(BoundaryBox boundaryBox, Vector3 delta)
         {
             
             var normDelta = Vector3.Normalize(delta) * 0.2f;
@@ -104,10 +105,30 @@ namespace SimpleGame.GameCore.Worlds
 
         private Vector3 CorrectDelta(BoundaryBox startPos, Vector3 delta, BoundaryBox blockPos)
         {
-            var epsilon = 0.2f;
+            var deltaX = GetDeltaAlongAxis(v => v.X, delta, startPos, blockPos);
+            var deltaY = GetDeltaAlongAxis(v => v.Y, delta, startPos, blockPos);
+            var deltaZ = GetDeltaAlongAxis(v => v.Z, delta, startPos, blockPos);
             
+            if (Math.Abs(deltaY * delta.Y) < Math.Abs(deltaX * delta.X) &&
+                Math.Abs(deltaZ * delta.Z) < Math.Abs(deltaX * delta.X))
+                return new Vector3(deltaX * Math.Sign(delta.X), delta.Y, delta.Z);
+            
+            if (Math.Abs(deltaY * delta.Y) < Math.Abs(deltaZ * delta.Z))
+                return new Vector3(delta.X, delta.Y, deltaZ * Math.Sign(delta.Z));
+            
+            return new Vector3(delta.X, deltaY * Math.Sign(delta.Y), delta.Z);
+        }
 
-            return delta;
+        private float GetDeltaAlongAxis(Func<Vector3, float> axisSelector, Vector3 delta, BoundaryBox startPos,
+            BoundaryBox blockPos)
+        {
+            var result = 0f;
+            if (delta.X > 0)
+                result = axisSelector(blockPos.Start) - axisSelector(startPos.End);
+            if (delta.X < 0)
+                result = axisSelector(startPos.Start) - axisSelector(blockPos.End);
+
+            return result;
         }
     }
 }
