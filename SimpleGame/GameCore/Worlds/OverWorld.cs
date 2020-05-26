@@ -46,27 +46,63 @@ namespace SimpleGame.GameCore.Worlds
             terrainGenerator = new TerrainGenerator(seed);
         }
 
+        private IEnumerable<Vector3> GetVertices(BoundaryBox b)
+        {
+            yield return new Vector3(b.Start);
+            yield return new Vector3(b.Start.X, b.Start.Y, b.End.Z);
+            yield return new Vector3(b.Start.X, b.End.Y, b.Start.Z);
+            yield return new Vector3(b.Start.X, b.End.Y, b.End.Z);
+            yield return new Vector3(b.End.X, b.Start.Y, b.Start.Z);
+            yield return new Vector3(b.End.X, b.Start.Y, b.End.Z);
+            yield return new Vector3(b.End.X, b.End.Y, b.Start.Z);
+            yield return new Vector3(b.End.X, b.End.Y, b.End.Z);
+        }
+
+        private BoundaryBox BlockBoundary(int x, int y, int z)
+        {
+            const float blockThickness = 0.5f;
+            var bb = new BoundaryBox();
+            bb.Start = new Vector3(x - blockThickness, y - blockThickness, z - blockThickness);
+            bb.End = new Vector3(x + blockThickness, y + blockThickness, z + blockThickness);
+            return bb;
+        }
         private BoundaryBox? GetNearestBlock(BoundaryBox boundaryBox, Vector3 delta)
         {
-            
-            var normDelta = Vector3.Normalize(delta) * 0.2f;
-            var result = normDelta;
-            var prevLength = delta.Length;
-            while ((delta - result).Length < prevLength)
+            const int partitions = 10;
+            for (int i = 0; i < partitions; i++)
             {
-                prevLength = (delta - result).Length;
-                if (GetBlockId(startPos + result) != 0)
+                foreach (var vertex in GetVertices(boundaryBox))
                 {
-                    result = startPos + result;
-                    return new BoundaryBox
+                    var offset = (delta / partitions * i) + vertex;
+                    for (int x = (int) vertex.X; x < offset.X; x++)
                     {
-                        Start = new Vector3((int) result.X, (int) result.Y, (int) result.Z),
-                        End = new Vector3((int) result.X + 1, (int) result.Y + 1, (int) result.Z + 1)
-                    };
+                        for (int y = (int) vertex.Y; x < offset.Y; y++)
+                        {
+                            for (int z = (int) vertex.Y; x < offset.Y; z++)
+                            {
+                                if (IsInBlock(offset, x, y, z))
+                                {
+                                    var chunkPosition = new Vector3(x, y, z).ToChunkPosition();
+                                    var chunk = GetChunk(chunkPosition);
+                                    if (chunk.Map[x, y, z] != 0)
+                                    {
+                                        return BlockBoundary(x, y, z);
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
-                result += delta;
             }
+
             return null;
+        }
+
+        private bool IsInBlock(Vector3 offset, int x, int y, int z)
+        {
+            const float blockThickness = 0.5f;
+            return offset.X <= x + blockThickness && offset.Y <= y + blockThickness && offset.Z <= z + blockThickness &&
+                   offset.X >= x - blockThickness && offset.Y >= y - blockThickness && offset.Z >= z - blockThickness;
         }
 
         private int GetBlockId(Vector3 position)
@@ -85,12 +121,23 @@ namespace SimpleGame.GameCore.Worlds
                 return 0;
             }
         }
+
+        private BoundaryBox GetPersonBoundaryBox(Vector3 position)
+        {
+            const float blockThickness = 0.5f;
+            
+            var bb = new BoundaryBox();
+            bb.Start = position - Vector3.One * blockThickness;
+            var dh = new Vector3(0, 1, 0);
+            bb.End = position + dh + Vector3.One * blockThickness;;
+            return bb;
+        }
         
         private void TryMove(Player person, Vector3 delta)
         {
             BoundaryBox? nearest;
             var prevNearest = new BoundaryBox();
-            while ((nearest = GetNearestBlock(person.Position, delta)) != null && 
+            while ((nearest = GetNearestBlock(GetPersonBoundaryBox(person.Position), delta)) != null && 
                    !((BoundaryBox) nearest).Equals(prevNearest))
             {
                 // Console.WriteLine($"Nearest {nearest}");
