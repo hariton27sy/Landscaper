@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 using OpenTK;
 using SimpleGame.GameCore.Persons;
 
@@ -19,13 +20,14 @@ namespace SimpleGame.GameCore.Worlds
             return terrainGenerator.GetChunk(chunkPosition);
         }
         
-        public IEnumerable<Chunk> GetChunksInRadius(Vector2 anchor, int chunkRenderRadius)
+        public async IAsyncEnumerable<Chunk> GetChunksInRadius(Vector2 anchor, int chunkRenderRadius)
         {
             for (int dx = -chunkRenderRadius; dx <= chunkRenderRadius; dx++)
             for (int dy = -chunkRenderRadius; dy <= chunkRenderRadius; dy++)
             {
                 var translation = new Vector2(dx, dy);
-                yield return GetChunk(anchor + translation);
+                yield return await Task.Run(() => GetChunk(anchor + translation));
+                // yield return GetChunk(anchor + translation);
             }
 
         }

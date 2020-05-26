@@ -47,11 +47,11 @@ namespace SimpleGame.Graphic
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
         }
 
-        public void Render(ICamera camera, TextureStorage storage, IEnumerable<IEntity> entities)
+        public async void Render(ICamera camera, TextureStorage storage, IAsyncEnumerable<IEntity> entities)
         {
             using (shader.Start())
             {
-                foreach (var entity in entities)
+                await foreach (var entity in entities)
                 {
                     var model = entity.GetModel(storage, camera);
                     using (model.Start())
