@@ -60,9 +60,9 @@ namespace SimpleGame.GameCore.Worlds
 
         private BoundaryBox BlockBoundary(int x, int y, int z)
         {
-            const float blockThickness = 0.5f;
+            const int blockThickness = 1;
             var bb = new BoundaryBox();
-            bb.Start = new Vector3(x - blockThickness, y - blockThickness, z - blockThickness);
+            bb.Start = new Vector3(x, y, z);
             bb.End = new Vector3(x + blockThickness, y + blockThickness, z + blockThickness);
             return bb;
         }
@@ -76,16 +76,18 @@ namespace SimpleGame.GameCore.Worlds
                     var offset = (delta / partitions * i) + vertex;
                     for (int x = (int) vertex.X; x < offset.X; x++)
                     {
-                        for (int y = (int) vertex.Y; x < offset.Y; y++)
+                        for (int y = (int) vertex.Y; y < offset.Y; y++)
                         {
-                            for (int z = (int) vertex.Y; x < offset.Y; z++)
+                            for (int z = (int) vertex.Z; z < offset.Z; z++)
                             {
+                                Console.WriteLine((offset, x, y, z));
                                 if (IsInBlock(offset, x, y, z))
                                 {
                                     var chunkPosition = new Vector3(x, y, z).ToChunkPosition();
                                     var chunk = GetChunk(chunkPosition);
                                     if (chunk.Map[x, y, z] != 0)
                                     {
+                                        Console.WriteLine("Nearest found");
                                         return BlockBoundary(x, y, z);
                                     }
                                 }
@@ -100,9 +102,9 @@ namespace SimpleGame.GameCore.Worlds
 
         private bool IsInBlock(Vector3 offset, int x, int y, int z)
         {
-            const float blockThickness = 0.5f;
+            const int blockThickness = 1;
             return offset.X <= x + blockThickness && offset.Y <= y + blockThickness && offset.Z <= z + blockThickness &&
-                   offset.X >= x - blockThickness && offset.Y >= y - blockThickness && offset.Z >= z - blockThickness;
+                   offset.X >= x && offset.Y >= y && offset.Z >= z;
         }
 
         private int GetBlockId(Vector3 position)
