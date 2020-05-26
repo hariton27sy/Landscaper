@@ -54,7 +54,6 @@ namespace SimpleGame.GameCore.Worlds
 
         private Vector3? GetNearestBlock(Vector3 startPos, Vector3 delta)
         {
-            
             var normDelta = Vector3.Normalize(delta) * 0.2f;
             var result = normDelta;
             var prevLength = delta.Length;

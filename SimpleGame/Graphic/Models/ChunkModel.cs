@@ -24,11 +24,10 @@ namespace SimpleGame.Graphic.Models
         private int verticesVbo;
         private int textureVbo;
         private int indicesVbo;
-        private int vao;
+        private int vao = -1;
 
         public ChunkModel(Chunk chunk, TextureStorage storage)
         {
-            vao = GlHelper.VaoCreator();
             Console.WriteLine(vao);
             this.chunk = chunk;
             this.storage = storage;

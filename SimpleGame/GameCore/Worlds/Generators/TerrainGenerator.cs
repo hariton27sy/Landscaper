@@ -16,6 +16,7 @@ namespace SimpleGame.GameCore.Worlds
         private List<IEnvironmentGenerator> environmentGenerators;
         
         private Dictionary<Vector2, Chunk> chunks = new Dictionary<Vector2, Chunk>();
+        private Dictionary<Vector2, Task> generatingChunks = new Dictionary<Vector2, Task>();
 
         private object lockobj;
 
@@ -135,7 +136,9 @@ namespace SimpleGame.GameCore.Worlds
             }
 
             Console.WriteLine("Chunk generation started");
-            Task.Run(() => GenerateNewChunk(chunkPosition, storage));
+            
+            if (!generatingChunks.ContainsKey(chunkPosition))
+                generatingChunks[chunkPosition] = Task.Run(() => GenerateNewChunk(chunkPosition, storage));
             Console.WriteLine("Returning null");
             return null;
         }
@@ -151,6 +154,7 @@ namespace SimpleGame.GameCore.Worlds
             lock (lockobj)
             {
                 chunks.Add(chunkPosition, chunk);
+                generatingChunks.Remove(chunkPosition);
             }
         }
     }
