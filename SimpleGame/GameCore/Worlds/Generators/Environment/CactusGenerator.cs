@@ -1,5 +1,5 @@
 using System;
-using OpenTK;
+using SimpleGame.textures;
 
 namespace SimpleGame.GameCore.Worlds
 {
@@ -7,20 +7,18 @@ namespace SimpleGame.GameCore.Worlds
     {
         private readonly int seed;
         private readonly Random random;
-        private int maxCountInChunk = 5;
-        private int maxLength = 5;
-        private const int Cactus = 11;
-        private const int Sand = 7;
+        private const int MaxCountInChunk = 5;
+        private const int MaxLength = 5;
 
         public CactusGenerator(int seed)
         {
             this.seed = seed;
-            this.random = new Random(seed);  
+            random = new Random(seed);  
         }
 
         public void AddEnvironment(Chunk chunk)
         {
-            var count = random.Next(maxCountInChunk);
+            var count = random.Next(MaxCountInChunk);
             for (int treeCount = 0; treeCount < count; treeCount++)
             {
                 var x = random.Next(Chunk.Width);
@@ -31,13 +29,13 @@ namespace SimpleGame.GameCore.Worlds
                     if (chunk.Map[x, top - 1, z] != 0)
                         break;
                 }
-                if (chunk.Map[x, top - 1, z] != Sand)
+                if (chunk.Map[x, top - 1, z] != (int) BlockType.Sand)
                     continue;
 
-                var length = random.Next(maxLength);
+                var length = random.Next(MaxLength);
                 for (var i = 0; i < length; i++)
                 {
-                    chunk.Map[x, top + i, z] = Cactus;
+                    chunk.Map[x, top + i, z] = (int) BlockType.Cactus;
                 }
             }
         }

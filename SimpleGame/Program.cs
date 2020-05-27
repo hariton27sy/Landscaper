@@ -1,12 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using OpenTK;
-using OpenTK.Graphics.ES10;
-using SimpleGame.GameCore;
 using SimpleGame.GameCore.Persons;
 using SimpleGame.GameCore.Worlds;
-using SimpleGame.Graphic;
 using SimpleGame.Graphic.Models;
-using SimpleGame.Graphic.Shaders;
 using SimpleGame.textures;
 
 namespace SimpleGame
@@ -16,11 +13,17 @@ namespace SimpleGame
         static void Main(string[] args)
         {
             TextureEnumGenerator.Run();
-            // var renderer = new Renderer(new StaticShader());
             
+            var seed = new Random().Next(int.MaxValue);
+            var environmentGenerators = new List<IEnvironmentGenerator>
+            {
+                new TreeGenerator(seed), 
+                new CactusGenerator(seed)
+            };
+            var terrainGenerator = new TerrainGenerator(seed, environmentGenerators);
             var player = new Player(new Vector3(1, 100, 1));
-            var seed = new Random().Next(Int32.MaxValue);
-            var world = new OverWorld(player, seed);
+            var world = new OverWorld(player, seed, terrainGenerator);
+            
             var textures = new TextureStorage("textures");
             var window = new Game(world, player, textures);
             window.Run();

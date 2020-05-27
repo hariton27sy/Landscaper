@@ -6,33 +6,37 @@ using System.Threading.Tasks;
 using OpenTK;
 using OpenTK.Graphics.ES20;
 using SimpleGame.Graphic.Models;
+using SimpleGame.textures;
 
 namespace SimpleGame.GameCore.Worlds
 {
-    public class TerrainGenerator
+    public class TerrainGenerator : ITerrainGenerator
     {
-        private NoiseGenerator surfaceGenerator;
-        private NoiseGenerator biomeGenerator;
-        private List<IEnvironmentGenerator> environmentGenerators;
+        private const int SandLevel = 62;
+        private const int SeaLevel = 60;
+        private const int LayerSize = 3;
         
-        private Dictionary<Vector2, Chunk> chunks = new Dictionary<Vector2, Chunk>();
-        private Dictionary<Vector2, Task> generatingChunks = new Dictionary<Vector2, Task>();
+        private readonly NoiseGenerator surfaceGenerator;
+        private readonly NoiseGenerator biomeGenerator;
+        private readonly IEnumerable<IEnvironmentGenerator> environmentGenerators;
+        
+        private readonly Dictionary<Vector2, Task> generatingChunks = new Dictionary<Vector2, Task>();
+        private readonly Dictionary<Vector2, Chunk> generatedChunks = new Dictionary<Vector2, Chunk>();
 
-        private object lockobj;
+        private readonly object objectLock;
 
-        public delegate double GetNoise(int x, int y);
-        public TerrainGenerator(int seed)
+        private delegate double GetNoise(int x, int y);
+        
+        public TerrainGenerator(int seed, IEnumerable<IEnvironmentGenerator> environmentGenerators)
         {
-            this.lockobj = new object();
+            objectLock = new object();
             surfaceGenerator = new NoiseGenerator(seed, 4);
             biomeGenerator = new NoiseGenerator(seed, 5);
-            
-            environmentGenerators = new List<IEnvironmentGenerator>();
-            environmentGenerators.Add(new TreeGenerator(seed));
-            environmentGenerators.Add(new CactusGenerator(seed));
+
+            this.environmentGenerators = environmentGenerators;
         }
-        
-        public double[,] GetNoiseMap(GetNoise getNoise, int xOffset, int zOffset, int dx, int dz)
+
+        private double[,] GetNoiseMap(GetNoise getNoise, int xOffset, int zOffset, int dx, int dz)
         {
             var map = new double[dx, dz];
             for (int x = 0; x < dx; x++)
@@ -42,7 +46,7 @@ namespace SimpleGame.GameCore.Worlds
             return map;
         }
 
-        enum BiomeType
+        private enum BiomeType
         {
             Forest,
             Beach,
@@ -57,22 +61,9 @@ namespace SimpleGame.GameCore.Worlds
                 return BiomeType.Forest;
             return BiomeType.Beach;
         }
-        
-        public int[,,] GenerateChunk(Vector2 chunkPosition)
-        {
-            const int grass = 5; // todo https://gamedev.ru/code/forum/?id=161884&page=64
-            const int dirt = 3;
-            const int stone = 4;
-            const int bedrock = 1;
-            const int sand = 7;
-            const int water = 8;
-            const int snow = 9;
-            const int oak = 10;
-            const int cactus = 11;
 
-            const int sandLevel = 62;
-            const int seaLevel = 60;
-            const int layerSize = 3;
+        private int[,,] GenerateChunk(Vector2 chunkPosition)
+        {
             var result = new int[Chunk.Width, Chunk.Height, Chunk.Length];
             var offset = chunkPosition.InWorldShift();
             var heightNoise = GetNoiseMap(surfaceGenerator.Noise, (int) offset.X, (int) offset.Y, Chunk.Width, Chunk.Length);
@@ -89,37 +80,37 @@ namespace SimpleGame.GameCore.Worlds
                     
                     var block = biome switch
                     {
-                        BiomeType.Forest => grass,
-                        BiomeType.Beach => sand,
-                        BiomeType.Hills => snow,
-                        _ => grass
+                        BiomeType.Forest => BlockType.Grass,
+                        BiomeType.Beach => BlockType.Sand,
+                        BiomeType.Hills => BlockType.SnowGrass,
+                        _ => BlockType.Grass
                     };
 
-                    if (height < sandLevel)
+                    if (height < SandLevel)
                     {
-                        block = sand;
+                        block = BlockType.Sand;
                     }
 
-                    result[x, height, z] = block;
+                    result[x, height, z] = (int) block;
 
-                    for (int i = height + 1; i < seaLevel; i++)
+                    for (int i = height + 1; i < SeaLevel; i++)
                     {
-                        result[x, i, z] = water;
+                        result[x, i, z] = (int) BlockType.Water;
                     }
 
 
-                    var stoneBorder = Math.Min(height, Chunk.Height) - layerSize;
+                    var stoneBorder = Math.Min(height, Chunk.Height) - LayerSize;
                     for (int i = 0; i < stoneBorder; i++)
                     {
-                        result[x, i, z] = stone;
+                        result[x, i, z] = (int) BlockType.Cobblestone;
                     }
 
-                    for (int i = stoneBorder; i < stoneBorder + layerSize; i++)
+                    for (int i = stoneBorder; i < stoneBorder + LayerSize; i++)
                     {
-                        if (block == grass)
-                            result[x, i, z] = dirt;
+                        if (block == BlockType.Grass)
+                            result[x, i, z] = (int) BlockType.Dirt;
                         else
-                            result[x, i, z] = block;
+                            result[x, i, z] = (int) block;
                     }
                 }
             }
@@ -127,12 +118,15 @@ namespace SimpleGame.GameCore.Worlds
             return result;
         }
 
-        public Chunk GetChunk(Vector2 chunkPosition, TextureStorage storage)
+        public Chunk GenerateChunk(Vector2 chunkPosition, TextureStorage storage)
         {
-            lock (lockobj)
+            lock (objectLock)
             {
-                if (chunks.TryGetValue(chunkPosition, out var chunk))
+                if (generatedChunks.TryGetValue(chunkPosition, out var chunk))
+                {
+                    generatedChunks.Remove(chunkPosition);
                     return chunk;
+                }
             }
             
             if (!generatingChunks.ContainsKey(chunkPosition))
@@ -151,11 +145,16 @@ namespace SimpleGame.GameCore.Worlds
 
             chunk.IsModified = true;
 
-            lock (lockobj)
+            lock (objectLock)
             {
-                chunks.Add(chunkPosition, chunk);
+                generatedChunks.Add(chunkPosition, chunk);
                 generatingChunks.Remove(chunkPosition);
             }
         }
+    }
+
+    public interface ITerrainGenerator
+    {
+        public Chunk GenerateChunk(Vector2 position, TextureStorage textureStorage);
     }
 }

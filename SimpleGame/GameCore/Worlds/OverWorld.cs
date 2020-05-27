@@ -11,14 +11,20 @@ namespace SimpleGame.GameCore.Worlds
     public class OverWorld : IWorld
     {
         private float gravity = 10;
-        private TerrainGenerator terrainGenerator;
+        private readonly TerrainGenerator terrainGenerator;
+        private readonly Dictionary<Vector2, Chunk> chunks = new Dictionary<Vector2, Chunk>();
         
-        private Player player;
+        private readonly Player player;
         public TextureStorage TextureStorage { get; set; }
 
         public Chunk GetChunk(Vector2 chunkPosition)
         {
-            return terrainGenerator.GetChunk(chunkPosition, TextureStorage);
+            if (chunks.TryGetValue(chunkPosition, out var chunk))
+                return chunk;
+            chunk = terrainGenerator.GenerateChunk(chunkPosition, TextureStorage);
+            if (chunk != null)
+                chunks.Add(chunkPosition, chunk);
+            return chunk;
         }
         
         public IEnumerable<Chunk> GetChunksInRadius(Vector2 anchor, int chunkRenderRadius)
@@ -27,9 +33,7 @@ namespace SimpleGame.GameCore.Worlds
             for (int dy = -chunkRenderRadius; dy <= chunkRenderRadius; dy++)
             {
                 var translation = new Vector2(dx, dy);
-                // yield return Task.Run(() => GetChunk(anchor + translation));
                 var chunk = GetChunk(anchor + translation);
-                // Console.WriteLine(chunk);
                 if (chunk != null)
                     yield return chunk;
             }
@@ -45,10 +49,10 @@ namespace SimpleGame.GameCore.Worlds
             //     player.Position = new Vector3(player.Position.X, 0, player.Position.Z);
         }
 
-        public OverWorld(Player player, int seed)
+        public OverWorld(Player player, int seed, TerrainGenerator terrainGenerator)
         {
             this.player = player;
-            terrainGenerator = new TerrainGenerator(seed);
+            this.terrainGenerator = terrainGenerator;
         }
 
         private IEnumerable<Vector3> GetVertices(BoundaryBox b)
