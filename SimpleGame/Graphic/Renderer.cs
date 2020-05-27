@@ -48,7 +48,7 @@ namespace SimpleGame.Graphic
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
         }
 
-        public void Render(ICamera camera, TextureStorage storage, IEnumerable<IEntity> entities)
+        public void Render(ICamera camera, ITextureStorage storage, IEnumerable<IEntity> entities)
         {
             using (shader.Start())
             {

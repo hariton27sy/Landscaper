@@ -17,13 +17,13 @@ namespace SimpleGame
     {
         private readonly IWorld World;
         private readonly IPlayer Player;
-        private readonly TextureStorage textures;
+        private readonly ITextureStorage textures;
         private Renderer renderer;
         
         private DateTime previousTime;
         private MouseState previousMouseState;
 
-        public Game(IWorld world, IPlayer player, TextureStorage textures)
+        public Game(IWorld world, IPlayer player, ITextureStorage textures)
         {
             World = world;
             Player = player;

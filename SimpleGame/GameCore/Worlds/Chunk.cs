@@ -6,7 +6,18 @@ using SimpleGame.Graphic.Models;
 
 namespace SimpleGame.GameCore.Worlds
 {
-    public class Chunk : IEntity
+    public abstract class BaseChunk : IEntity
+    {
+        public abstract bool IsModified { get; set; }
+        public abstract Matrix4 TransformMatrix { get; }
+        public static int Width;
+        public static int Height;
+        public static int Length;
+        public readonly int[,,] Map;
+        public abstract IModel GetModel(ITextureStorage storage, ICamera camera);
+    }
+
+    public class Chunk : BaseChunk
     {
         private readonly Vector2 location;
         public static int Width => 16;
@@ -15,9 +26,9 @@ namespace SimpleGame.GameCore.Worlds
         private bool pendingModel;
         
 
-        public int[,,] Map;
+        public readonly int[,,] Map;
 
-        public bool IsModified
+        public override bool IsModified
         {
             get => isModified;
             set
@@ -41,7 +52,7 @@ namespace SimpleGame.GameCore.Worlds
             IsModified = true;
         }
 
-        public IModel GetModel(ITextureStorage storage, ICamera camera)
+        public override IModel GetModel(ITextureStorage storage, ICamera camera)
         {
             if (model is null)
             {
@@ -59,7 +70,7 @@ namespace SimpleGame.GameCore.Worlds
             pendingModel = false;
         }
 
-        public Matrix4 TransformMatrix => 
+        public override Matrix4 TransformMatrix => 
             Matrix4.CreateTranslation(location.X * Width, 0, location.Y * Length);
     }
 }

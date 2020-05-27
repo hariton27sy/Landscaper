@@ -12,12 +12,12 @@ namespace SimpleGame.GameCore.Worlds
     {
         private float gravity = 0;
         private readonly ITerrainGenerator terrainGenerator;
-        private readonly Dictionary<Vector2, Chunk> chunks = new Dictionary<Vector2, Chunk>();
+        private readonly Dictionary<Vector2, BaseChunk> chunks = new Dictionary<Vector2, BaseChunk>();
         
         private readonly IPlayer player;
-        public TextureStorage TextureStorage { get; set; }
+        public ITextureStorage TextureStorage { get; set; }
 
-        public Chunk GetChunk(Vector2 chunkPosition)
+        public BaseChunk GetChunk(Vector2 chunkPosition)
         {
             if (chunks.TryGetValue(chunkPosition, out var chunk))
                 return chunk;
@@ -27,7 +27,7 @@ namespace SimpleGame.GameCore.Worlds
             return chunk;
         }
         
-        public IEnumerable<Chunk> GetChunksInRadius(Vector2 anchor, int chunkRenderRadius)
+        public IEnumerable<BaseChunk> GetChunksInRadius(Vector2 anchor, int chunkRenderRadius)
         {
             for (int dx = -chunkRenderRadius; dx <= chunkRenderRadius; dx++)
             for (int dy = -chunkRenderRadius; dy <= chunkRenderRadius; dy++)
@@ -49,7 +49,7 @@ namespace SimpleGame.GameCore.Worlds
             //     player.Position = new Vector3(player.Position.X, 0, player.Position.Z);
         }
 
-        public OverWorld(IPlayer player, int seed, ITerrainGenerator terrainGenerator)
+        public OverWorld(IPlayer player, ITerrainGenerator terrainGenerator)
         {
             this.player = player;
             this.terrainGenerator = terrainGenerator;
@@ -124,11 +124,11 @@ namespace SimpleGame.GameCore.Worlds
 
         private int GetBlockId(Vector3 position)
         {
-            var chunkX = (int) (position.X / Chunk.Width);
-            var chunkZ = (int) (position.Z / Chunk.Length);
-            var x = (int) position.X % Chunk.Width;
+            var chunkX = (int) (position.X / BaseChunk.Width);
+            var chunkZ = (int) (position.Z / BaseChunk.Length);
+            var x = (int) position.X % BaseChunk.Width;
             var y = (int) position.Y;
-            var z = (int) position.Z % Chunk.Length;
+            var z = (int) position.Z % BaseChunk.Length;
             try
             {
                 var chunk = GetChunk(new Vector2(chunkX, chunkZ));
