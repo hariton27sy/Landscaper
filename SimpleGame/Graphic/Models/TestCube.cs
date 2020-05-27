@@ -7,12 +7,12 @@ namespace SimpleGame.Graphic.Models
     {
         private static TestModel model = new TestModel();
 
-        public IModel GetModel(TextureStorage storage, ICamera camera)
+        public IModel GetModel(ITextureStorage storage, ICamera camera)
         {
             return model;
         }
 
-        IModel IEntity.GetModel(TextureStorage storage, ICamera camera)
+        IModel IEntity.GetModel(ITextureStorage storage, ICamera camera)
         {
             return GetModel(storage, camera);
         }

@@ -18,7 +18,7 @@ namespace SimpleGame.Graphic.Models
         private int lastIndex;
         
         private Chunk chunk;
-        private TextureStorage storage;
+        private ITextureStorage storage;
         private bool shouldLoadToGl;
 
         private bool isDisposed;
@@ -27,7 +27,7 @@ namespace SimpleGame.Graphic.Models
         private int indicesVbo;
         private int vao = -1;
 
-        public ChunkModel(Chunk chunk, TextureStorage storage)
+        public ChunkModel(Chunk chunk, ITextureStorage storage)
         {
             this.chunk = chunk;
             this.storage = storage;

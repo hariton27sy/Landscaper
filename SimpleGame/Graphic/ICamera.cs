@@ -4,8 +4,8 @@ namespace SimpleGame.Graphic
 {
     public interface ICamera
     {
-        Matrix4 ViewMatrix { get; }
-        Vector3 Direction { get; }
-        Vector3 Position { get; }
+        public Matrix4 ViewMatrix { get; }
+        public Vector3 Direction { get; }
+        public Vector3 Position { get; }
     }
 }

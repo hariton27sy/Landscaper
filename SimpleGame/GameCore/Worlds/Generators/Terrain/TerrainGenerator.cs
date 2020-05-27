@@ -27,13 +27,13 @@ namespace SimpleGame.GameCore.Worlds
 
         private delegate double GetNoise(int x, int y);
         
-        public TerrainGenerator(int seed, IEnumerable<IEnvironmentGenerator> environmentGenerators)
+        public TerrainGenerator(int seed, IEnumerable<IEnvironmentGenerator> environmentGenerators, NoiseGenerator surfaceGenerator, NoiseGenerator biomeGenerator)
         {
             objectLock = new object();
-            surfaceGenerator = new NoiseGenerator(seed, 4);
-            biomeGenerator = new NoiseGenerator(seed, 5);
 
             this.environmentGenerators = environmentGenerators;
+            this.surfaceGenerator = surfaceGenerator;
+            this.biomeGenerator = biomeGenerator;
         }
 
         private double[,] GetNoiseMap(GetNoise getNoise, int xOffset, int zOffset, int dx, int dz)
@@ -118,7 +118,7 @@ namespace SimpleGame.GameCore.Worlds
             return result;
         }
 
-        public Chunk GenerateChunk(Vector2 chunkPosition, TextureStorage storage)
+        public Chunk GenerateChunk(Vector2 chunkPosition, ITextureStorage storage)
         {
             lock (objectLock)
             {
@@ -135,7 +135,7 @@ namespace SimpleGame.GameCore.Worlds
             return null;
         }
         
-        private void GenerateNewChunk(Vector2 chunkPosition, TextureStorage storage)
+        private void GenerateNewChunk(Vector2 chunkPosition, ITextureStorage storage)
         {
             var chunk = new Chunk(chunkPosition, GenerateChunkMap(chunkPosition), storage);
             foreach (var environmentGenerator in environmentGenerators)
@@ -155,6 +155,6 @@ namespace SimpleGame.GameCore.Worlds
 
     public interface ITerrainGenerator
     {
-        public Chunk GenerateChunk(Vector2 position, TextureStorage textureStorage);
+        public Chunk GenerateChunk(Vector2 position, ITextureStorage textureStorage);
     }
 }

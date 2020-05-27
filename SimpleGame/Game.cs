@@ -16,14 +16,14 @@ namespace SimpleGame
     public class Game : GameWindow
     {
         private readonly IWorld World;
-        private readonly Player Player;
+        private readonly IPlayer Player;
         private readonly TextureStorage textures;
         private Renderer renderer;
         
         private DateTime previousTime;
         private MouseState previousMouseState;
 
-        public Game(IWorld world, Player player, TextureStorage textures)
+        public Game(IWorld world, IPlayer player, TextureStorage textures)
         {
             World = world;
             Player = player;

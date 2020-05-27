@@ -11,10 +11,10 @@ namespace SimpleGame.GameCore.Worlds
     public class OverWorld : IWorld
     {
         private float gravity = 0;
-        private readonly TerrainGenerator terrainGenerator;
+        private readonly ITerrainGenerator terrainGenerator;
         private readonly Dictionary<Vector2, Chunk> chunks = new Dictionary<Vector2, Chunk>();
         
-        private readonly Player player;
+        private readonly IPlayer player;
         public TextureStorage TextureStorage { get; set; }
 
         public Chunk GetChunk(Vector2 chunkPosition)
@@ -49,7 +49,7 @@ namespace SimpleGame.GameCore.Worlds
             //     player.Position = new Vector3(player.Position.X, 0, player.Position.Z);
         }
 
-        public OverWorld(Player player, int seed, TerrainGenerator terrainGenerator)
+        public OverWorld(IPlayer player, int seed, ITerrainGenerator terrainGenerator)
         {
             this.player = player;
             this.terrainGenerator = terrainGenerator;
@@ -151,7 +151,7 @@ namespace SimpleGame.GameCore.Worlds
             return bb;
         }
         
-        private void TryMove(Player person, Vector3 delta)
+        private void TryMove(IPlayer person, Vector3 delta)
         {
             BoundaryBox? nearest;
             var prevNearest = new BoundaryBox();

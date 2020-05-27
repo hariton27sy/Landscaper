@@ -4,7 +4,19 @@ using SimpleGame.Graphic;
 
 namespace SimpleGame.GameCore.Persons
 {
-    public class Player : ICamera
+    public interface IPlayer : ICamera
+    {
+        Vector3 Velocity { get; set; }
+        Vector3 AbsoluteVelocity { get; }
+        Vector3 Position { get; set; }
+        float Yaw { get; set; }
+        float Pitch { get; set; }
+        Matrix4 ViewMatrix { get; }
+        Vector3 Direction { get; }
+        BoundaryBox BoundaryBox { get; }
+    }
+
+    public class Player : IPlayer
     {
         public Vector3 Velocity { get; set; }
         

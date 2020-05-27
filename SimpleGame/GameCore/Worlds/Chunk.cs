@@ -33,15 +33,15 @@ namespace SimpleGame.GameCore.Worlds
         
         private IModel model;
 
-        public Chunk(Vector2 location, int[,,] map, TextureStorage storage)
+        public Chunk(Vector2 location, int[,,] map, ITextureStorage storage)
         {
             Location = location;
             Map = map;
-            // model = new ChunkModel(this, storage);
+            model = new ChunkModel(this, storage);
             IsModified = true;
         }
 
-        public IModel GetModel(TextureStorage storage, ICamera camera)
+        public IModel GetModel(ITextureStorage storage, ICamera camera)
         {
             if (model is null)
             {
@@ -52,7 +52,7 @@ namespace SimpleGame.GameCore.Worlds
             return model;
         }
 
-        private void GenerateModel(TextureStorage textureStorage)
+        private void GenerateModel(ITextureStorage textureStorage)
         {
             pendingModel = true;
             model = new ChunkModel(this, textureStorage);

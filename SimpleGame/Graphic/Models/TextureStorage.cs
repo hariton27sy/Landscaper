@@ -5,7 +5,14 @@ using System.Linq;
 
 namespace SimpleGame.Graphic.Models
 {
-    public class TextureStorage : IDisposable
+    public interface ITextureStorage : IDisposable
+    {
+        Texture this[int value] { get; }
+        Texture this[string value] { get; }
+        void LoadTextures();
+    }
+
+    public class TextureStorage : ITextureStorage
     {
         private readonly string directory;
         private readonly Dictionary<int, Atlas> atlases = new Dictionary<int, Atlas>();
