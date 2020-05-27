@@ -10,7 +10,7 @@ namespace SimpleGame.GameCore.Worlds
 {
     public class OverWorld : IWorld
     {
-        private float gravity = 0;
+        private float gravity = 10;
         private TerrainGenerator terrainGenerator;
         
         private Player player;
@@ -85,20 +85,21 @@ namespace SimpleGame.GameCore.Worlds
                         {
                             for (int z = (int) vertex.Z; z < offset.Z; z++)
                             {
-                                Console.WriteLine((offset, x, y, z));
+                                // Console.WriteLine((offset, x, y, z));
                                 if (IsInBlock(offset, x, y, z))
                                 {
                                     var chunkPosition = new Vector3(x, y, z).ToChunkPosition();
                                     var chunk = GetChunk(chunkPosition);
-                                    
-                                    // todo player restricted
-                                    if (chunk == null) 
-                                        continue;
-                                    
-                                    if (chunk.Map[x, y, z] != 0)
+
+                                    try
                                     {
-                                        Console.WriteLine("Nearest found");
-                                        return BlockBoundary(x, y, z);
+                                        if (chunk.Map[x, y, z] != 0)
+                                        {
+                                            return BlockBoundary(x, y, z);
+                                        }
+                                    }
+                                    catch
+                                    {
                                     }
                                 }
                             }

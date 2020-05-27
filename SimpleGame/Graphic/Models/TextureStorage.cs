@@ -15,13 +15,12 @@ namespace SimpleGame.Graphic.Models
         public TextureStorage(string directory)
         {
             this.directory = directory;
-            LoadTextures();
         }
 
         public Texture this[int value] => textures[value];
         public Texture this[string value] => texturesByName[value];
 
-        private void LoadTextures()
+        public void LoadTextures()
         {
             using (var f = new FileInfo(Path.Combine(directory, ".conf")).OpenText())
             {
