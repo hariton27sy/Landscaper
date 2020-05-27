@@ -8,7 +8,7 @@ namespace SimpleGame.GameCore.Worlds
 {
     public class Chunk : IEntity
     {
-        public readonly Vector2 Location;
+        private readonly Vector2 location;
         public static int Width => 16;
         public static int Height => 256;
         public static int Length => 16;
@@ -35,7 +35,7 @@ namespace SimpleGame.GameCore.Worlds
 
         public Chunk(Vector2 location, int[,,] map, ITextureStorage storage)
         {
-            Location = location;
+            this.location = location;
             Map = map;
             model = new ChunkModel(this, storage);
             IsModified = true;
@@ -60,6 +60,6 @@ namespace SimpleGame.GameCore.Worlds
         }
 
         public Matrix4 TransformMatrix => 
-            Matrix4.CreateTranslation(Location.X * Width, 0, Location.Y * Length);
+            Matrix4.CreateTranslation(location.X * Width, 0, location.Y * Length);
     }
 }

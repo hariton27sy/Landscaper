@@ -16,8 +16,8 @@ namespace SimpleGame.GameCore.Worlds
         private const int SeaLevel = 60;
         private const int LayerSize = 3;
         
-        private readonly NoiseGenerator surfaceGenerator;
-        private readonly NoiseGenerator biomeGenerator;
+        private readonly INoiseGenerator surfaceGenerator;
+        private readonly INoiseGenerator biomeGenerator;
         private readonly IEnumerable<IEnvironmentGenerator> environmentGenerators;
         
         private readonly Dictionary<Vector2, Task> generatingChunks = new Dictionary<Vector2, Task>();
@@ -27,7 +27,7 @@ namespace SimpleGame.GameCore.Worlds
 
         private delegate double GetNoise(int x, int y);
         
-        public TerrainGenerator(int seed, IEnumerable<IEnvironmentGenerator> environmentGenerators, NoiseGenerator surfaceGenerator, NoiseGenerator biomeGenerator)
+        public TerrainGenerator(int seed, IEnumerable<IEnvironmentGenerator> environmentGenerators, INoiseGenerator surfaceGenerator, INoiseGenerator biomeGenerator)
         {
             objectLock = new object();
 
@@ -151,10 +151,5 @@ namespace SimpleGame.GameCore.Worlds
                 generatingChunks.Remove(chunkPosition);
             }
         }
-    }
-
-    public interface ITerrainGenerator
-    {
-        public Chunk GenerateChunk(Vector2 position, ITextureStorage textureStorage);
     }
 }

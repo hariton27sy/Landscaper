@@ -4,15 +4,20 @@ using OpenTK.Platform.Windows;
 
 namespace SimpleGame.GameCore.Worlds
 {
-    public class NoiseGenerator
+    public interface INoiseGenerator
+    {
+        double Noise(int x, int y);
+    }
+
+    public class NoiseGenerator : INoiseGenerator
     {
         private int Seed { get; }
         private int Octaves { get; }
         private double Amplitude { get; }
         private double Persistence { get; }
         private double Frequency { get; }
-        
-        public delegate double Smooth(double x, double y);
+
+        private delegate double Smooth(double x, double y);
         private readonly Smooth smooth;
 
         public NoiseGenerator(int seed, int octaves = 8, double amplitude = 1, double persistence = 0.65, double frequency = 0.015)
@@ -48,7 +53,7 @@ namespace SimpleGame.GameCore.Worlds
             return (total/ 2.4);
         }
 
-        public double NoiseGeneration(int x, int y)
+        private double NoiseGeneration(int x, int y)
         {
             int n = x + y * 57;
             n = (n << 13) ^ n;
@@ -61,8 +66,8 @@ namespace SimpleGame.GameCore.Worlds
             double value = (1 - Math.Cos(a * Math.PI)) * 0.5;
             return x * (1 - value) + y * value;
         }
-        
-        public double CrossSmooth(double x, double y)
+
+        private double CrossSmooth(double x, double y)
         {
             var ix = (int)x;
             var iy = (int)y;
@@ -77,7 +82,7 @@ namespace SimpleGame.GameCore.Worlds
             return Interpolate(i1, i2, y - iy);
         }
 
-        public double SquareSmooth(double x, double y)
+        private double SquareSmooth(double x, double y)
         {
             var ix = (int)x;
             var iy = (int)y;

@@ -5,19 +5,12 @@ using System.Linq;
 
 namespace SimpleGame.Graphic.Models
 {
-    public interface ITextureStorage : IDisposable
-    {
-        Texture this[int value] { get; }
-        Texture this[string value] { get; }
-        void LoadTextures();
-    }
-
     public class TextureStorage : ITextureStorage
     {
         private readonly string directory;
         private readonly Dictionary<int, Atlas> atlases = new Dictionary<int, Atlas>();
-        private Dictionary<int, Texture> textures = new Dictionary<int, Texture>();
-        private Dictionary<string, Texture> texturesByName = new Dictionary<string, Texture>();
+        private readonly Dictionary<int, Texture> textures = new Dictionary<int, Texture>();
+        private readonly Dictionary<string, Texture> texturesByName = new Dictionary<string, Texture>();
         
         public TextureStorage(string directory)
         {
