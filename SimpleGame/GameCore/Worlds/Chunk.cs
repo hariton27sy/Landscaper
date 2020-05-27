@@ -1,4 +1,5 @@
 using System.IO;
+using System.Threading.Tasks;
 using OpenTK;
 using SimpleGame.Graphic;
 using SimpleGame.Graphic.Models;
@@ -11,6 +12,7 @@ namespace SimpleGame.GameCore.Worlds
         public static int Width => 16;
         public static int Height => 256;
         public static int Length => 16;
+        private bool pendingModel;
         
 
         public int[,,] Map;
@@ -35,16 +37,26 @@ namespace SimpleGame.GameCore.Worlds
         {
             Location = location;
             Map = map;
-            model = new ChunkModel(this, storage);
+            // model = new ChunkModel(this, storage);
             IsModified = true;
         }
 
         public IModel GetModel(TextureStorage storage, ICamera camera)
         {
             if (model is null)
-                model = new ChunkModel(this, storage);
-
+            {
+                if (!pendingModel) 
+                    Task.Run(() => GenerateModel(storage));
+            }
+            
             return model;
+        }
+
+        private void GenerateModel(TextureStorage textureStorage)
+        {
+            pendingModel = true;
+            model = new ChunkModel(this, textureStorage);
+            pendingModel = false;
         }
 
         public Matrix4 TransformMatrix => 

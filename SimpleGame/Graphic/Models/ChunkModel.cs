@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using NLog.LayoutRenderers;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
@@ -107,7 +108,6 @@ namespace SimpleGame.Graphic.Models
                 return;
             var blockTexture = storage[chunk.Map[x, y, z]];
             var offset = new Vector3(x + 0.5f, y + 0.5f, z + 0.5f);
-            // var offset = new Vector3(x, y, z);
             var toSee = new HashSet<BlockEdge>();
             
             if (!HasNeighbourOn(x, y, z, BlockEdge.Right))
@@ -122,13 +122,6 @@ namespace SimpleGame.Graphic.Models
                 toSee.Add(BlockEdge.Front);
             if (!HasNeighbourOn(x, y, z, BlockEdge.Back))
                 toSee.Add(BlockEdge.Back);
-
-            // toSee.Add(BlockEdge.Back);
-            // toSee.Add(BlockEdge.Front);
-            // toSee.Add(BlockEdge.Top);
-            // toSee.Add(BlockEdge.Bottom);
-            // toSee.Add(BlockEdge.Left);
-            // toSee.Add(BlockEdge.Right);
 
             foreach (var edge in toSee)
             {

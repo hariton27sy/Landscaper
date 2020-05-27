@@ -12,7 +12,7 @@ namespace SimpleGame
     {
         static void Main(string[] args)
         {
-            TextureEnumGenerator.Run();
+            // TextureEnumGenerator.Run();
             
             var seed = new Random().Next(int.MaxValue);
             var environmentGenerators = new List<IEnvironmentGenerator>

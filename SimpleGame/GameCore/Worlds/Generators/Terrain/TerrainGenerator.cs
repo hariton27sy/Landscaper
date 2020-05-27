@@ -62,7 +62,7 @@ namespace SimpleGame.GameCore.Worlds
             return BiomeType.Beach;
         }
 
-        private int[,,] GenerateChunk(Vector2 chunkPosition)
+        private int[,,] GenerateChunkMap(Vector2 chunkPosition)
         {
             var result = new int[Chunk.Width, Chunk.Height, Chunk.Length];
             var offset = chunkPosition.InWorldShift();
@@ -137,7 +137,7 @@ namespace SimpleGame.GameCore.Worlds
         
         private void GenerateNewChunk(Vector2 chunkPosition, TextureStorage storage)
         {
-            var chunk = new Chunk(chunkPosition, GenerateChunk(chunkPosition), storage);
+            var chunk = new Chunk(chunkPosition, GenerateChunkMap(chunkPosition), storage);
             foreach (var environmentGenerator in environmentGenerators)
             {
                 environmentGenerator.AddEnvironment(chunk);   

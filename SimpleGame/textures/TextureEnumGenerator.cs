@@ -17,8 +17,6 @@ namespace SimpleGame.textures
 
         private static void GenerateEnum(string configPath, string enumPath)
         {
-            Console.WriteLine(configPath);
-            Console.WriteLine(enumPath);
             using (StreamWriter enumFile = new StreamWriter(enumPath, false))
             {
                 enumFile.WriteLine("namespace SimpleGame.textures\n{\n\tpublic enum BlockType\n\t{");

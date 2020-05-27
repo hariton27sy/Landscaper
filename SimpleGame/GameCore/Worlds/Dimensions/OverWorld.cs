@@ -10,7 +10,7 @@ namespace SimpleGame.GameCore.Worlds
 {
     public class OverWorld : IWorld
     {
-        private float gravity = 10;
+        private float gravity = 0;
         private readonly TerrainGenerator terrainGenerator;
         private readonly Dictionary<Vector2, Chunk> chunks = new Dictionary<Vector2, Chunk>();
         
