@@ -27,7 +27,7 @@ namespace SimpleGame.GameCore.Worlds
 
         private delegate double GetNoise(int x, int y);
         
-        public TerrainGenerator(int seed, IEnumerable<IEnvironmentGenerator> environmentGenerators, INoiseGenerator surfaceGenerator, INoiseGenerator biomeGenerator)
+        public TerrainGenerator(int seed, IEnvironmentGenerator[] environmentGenerators, INoiseGenerator surfaceGenerator, INoiseGenerator biomeGenerator)
         {
             objectLock = new object();
 

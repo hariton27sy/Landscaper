@@ -18,18 +18,23 @@ namespace SimpleGame
             var container = new StandardKernel();
             
             var seed = new Random().Next(int.MaxValue);
-            var environmentGenerators = new List<IEnvironmentGenerator>
-            {
-                new TreeGenerator(seed), 
-                new CactusGenerator(seed)
-            };
-            var terrainGenerator = new TerrainGenerator(seed, environmentGenerators, new NoiseGenerator(seed, 4),  new NoiseGenerator(seed, 5));
-            var player = new Player(new Vector3(1, 100, 1));
-            var world = new OverWorld(player, terrainGenerator);
             
-            var textures = new TextureStorage("textures");
-            var window = new Game(world, player, textures);
-            window.Run();
+            container.Bind<IEnvironmentGenerator>().To<TreeGenerator>().WithConstructorArgument("seed", seed);
+            container.Bind<IEnvironmentGenerator>().To<CactusGenerator>().WithConstructorArgument("seed", seed);
+            container.Bind<ITerrainGenerator>().To<TerrainGenerator>()
+                .WithConstructorArgument("seed", seed)
+                .WithConstructorArgument("surfaceGenerator", new NoiseGenerator(seed, 4))
+                .WithConstructorArgument("biomeGenerator", new NoiseGenerator(seed, 5));
+            
+            container.Bind<Vector3>().ToConstant(new Vector3(1, 100, 1));
+            container.Bind<IPlayer>().To<Player>();
+            container.Bind<IWorld>().To<OverWorld>();
+            container.Bind<ITextureStorage>()
+                .ToConstructor(_ => new TextureStorage("textures"));
+            container.Bind<GameWindow>().To<Game>()
+                .OnActivation(g => g.Run());
+            var game = container.Get<Game>();
+            game.Run();
         }
     }
 }
