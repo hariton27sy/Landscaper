@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Ninject;
+using Ninject.Parameters;
 using OpenTK;
 using SimpleGame.GameCore.Persons;
 using SimpleGame.GameCore.Worlds;
@@ -27,7 +28,7 @@ namespace SimpleGame
                 .WithConstructorArgument("biomeGenerator", new NoiseGenerator(seed, 5));
             
             container.Bind<Vector3>().ToConstant(new Vector3(1, 100, 1));
-            container.Bind<IPlayer>().To<Player>();
+            container.Bind<IPlayer>().To<Player>().InSingletonScope();
             container.Bind<IWorld>().To<OverWorld>();
             container.Bind<ITextureStorage>()
                 .ToConstructor(_ => new TextureStorage("textures"));
