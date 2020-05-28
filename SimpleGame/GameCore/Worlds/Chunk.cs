@@ -12,7 +12,7 @@ namespace SimpleGame.GameCore.Worlds
         public static int Width => 16;
         public static int Height => 256;
         public static int Length => 16;
-        private object pendingModel;
+        private bool isPendingModel;
 
         public override bool IsModified
         {
@@ -34,17 +34,16 @@ namespace SimpleGame.GameCore.Worlds
         {
             this.location = location;
             Map = map;
-            // model = new ChunkModel(this, storage);
             IsModified = true;
-            pendingModel = new object();
         }
 
         public override IModel GetModel(ITextureStorage storage, ICamera camera)
         {
-            lock (pendingModel)
+            if (model == null)
             {
-                if (model is null)
+                if (!isPendingModel)
                 {
+                    isPendingModel = true;
                     Task.Run(() => GenerateModel(storage));
                 }
             }
@@ -54,10 +53,8 @@ namespace SimpleGame.GameCore.Worlds
 
         private void GenerateModel(ITextureStorage textureStorage)
         {
-            lock (pendingModel)
-            {
-                model = new ChunkModel(this, textureStorage);
-            }
+            model = new ChunkModel(this, textureStorage);
+            isPendingModel = false;
         }
 
         public override Matrix4 TransformMatrix => 
