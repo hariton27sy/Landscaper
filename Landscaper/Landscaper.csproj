@@ -4,6 +4,8 @@
     <OutputType>Exe</OutputType>
     <StartupObject>SimpleGame.Program</StartupObject>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AssemblyName>Landscaper</AssemblyName>
+    <RootNamespace>Landscaper</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

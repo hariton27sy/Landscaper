@@ -19,7 +19,7 @@ namespace SimpleGame.textures
         {
             using (StreamWriter enumFile = new StreamWriter(enumPath, false))
             {
-                enumFile.WriteLine("namespace SimpleGame.textures\n{\n\tpublic enum BlockType\n\t{");
+                enumFile.WriteLine("namespace Landscaper.textures\n{\n\tpublic enum BlockType\n\t{");
                 using (StreamReader config = new StreamReader(configPath))
                 {
                     config.ReadLine();
