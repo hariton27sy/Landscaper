@@ -97,7 +97,7 @@ namespace SimpleGame
                 case Key.Space:
                     Player.Velocity = new Vector3(Player.Velocity.X, speed, Player.Velocity.Z);
                     break;
-                case Key.P:
+                case Key.Escape:
                     CursorVisible = !CursorVisible;
                     break;
                 default:
