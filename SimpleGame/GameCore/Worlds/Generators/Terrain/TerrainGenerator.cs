@@ -140,7 +140,6 @@ namespace SimpleGame.GameCore.Worlds
         {
             var map = GenerateChunkMap(chunkPosition);
             var chunk = new Chunk(chunkPosition, map, storage);
-            Console.WriteLine(chunk.Map);
             foreach (var environmentGenerator in environmentGenerators)
             {
                 environmentGenerator.AddEnvironment(chunk);   

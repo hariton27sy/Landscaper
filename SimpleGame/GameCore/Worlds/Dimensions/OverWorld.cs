@@ -29,6 +29,9 @@ namespace SimpleGame.GameCore.Worlds
         
         public IEnumerable<BaseChunk> GetChunksInRadius(Vector2 anchor, int chunkRenderRadius)
         {
+            var map = new bool[2 * chunkRenderRadius, 2 * chunkRenderRadius];
+            var shifts = new Queue<(int, int)>();
+            
             for (int dx = -chunkRenderRadius; dx <= chunkRenderRadius; dx++)
             for (int dy = -chunkRenderRadius; dy <= chunkRenderRadius; dy++)
             {
@@ -44,11 +47,8 @@ namespace SimpleGame.GameCore.Worlds
         {
             if (GetBlockId(player.Position - Vector3.UnitY) == 0)
                 player.Velocity -= Vector3.UnitY * gravity * (float)delta.TotalSeconds;
-            // player.Position += player.AbsoluteVelocity * (float) delta.TotalSeconds;
             if (Math.Abs(player.AbsoluteVelocity.Length) > 1e-10)
                 TryMove(player, player.AbsoluteVelocity * (float)delta.TotalSeconds);
-            // if (player.Position.Y < 0)
-            //     player.Position = new Vector3(player.Position.X, 0, player.Position.Z);
         }
 
         public OverWorld(IPlayer player, ITerrainGenerator terrainGenerator)
@@ -128,7 +128,6 @@ namespace SimpleGame.GameCore.Worlds
             Vector3 prevNearest = Vector3.Zero;
             while ((nearest = GetNearestBlock(person.Position, delta)) != null && prevNearest != nearest)
             {
-                // Console.WriteLine($"Nearest {nearest}");
                 delta = CorrectDelta(player.Position, delta, (Vector3) nearest);
                 prevNearest = (Vector3)nearest;
             }

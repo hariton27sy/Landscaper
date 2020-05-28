@@ -26,16 +26,21 @@ namespace SimpleGame.Graphic.Models
         
         public static int LoadTexture(string textureFilename)
         {
+            var textureId = GL.GenTexture();
+            GL.BindTexture(TextureTarget.Texture2D, textureId);
+
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
+            
             var bitmap = new Bitmap(textureFilename);
             var data = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), 
                 ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            var textureId = GL.GenTexture();
-            GL.BindTexture(TextureTarget.Texture2D, textureId);
+            
             GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, 
                 bitmap.Width, bitmap.Height, 0, PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
             GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
             GL.BindTexture(TextureTarget.Texture2D, 0);
-            
+
             return textureId;
         }
 
