@@ -30,7 +30,7 @@ namespace SimpleGame.GameCore.Worlds
         
         private IModel model;
 
-        public Chunk(Vector2 location, int[,,] map, ITextureStorage storage)
+        public Chunk(Vector2 location, int[,,] map)
         {
             this.location = location;
             Map = map;

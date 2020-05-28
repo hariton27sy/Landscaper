@@ -5,6 +5,6 @@ namespace SimpleGame.GameCore.Worlds
 {
     public interface ITerrainGenerator
     {
-        public Chunk GenerateChunk(Vector2 position, ITextureStorage textureStorage);
+        public Chunk GenerateChunk(Vector2 position);
     }
 }

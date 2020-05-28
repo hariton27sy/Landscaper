@@ -119,7 +119,7 @@ namespace SimpleGame.GameCore.Worlds
             return result;
         }
 
-        public Chunk GenerateChunk(Vector2 chunkPosition, ITextureStorage storage)
+        public Chunk GenerateChunk(Vector2 chunkPosition)
         {
             lock (objectLock)
             {
@@ -131,15 +131,15 @@ namespace SimpleGame.GameCore.Worlds
             }
             
             if (!generatingChunks.ContainsKey(chunkPosition))
-                generatingChunks[chunkPosition] = Task.Run(() => GenerateNewChunk(chunkPosition, storage));
+                generatingChunks[chunkPosition] = Task.Run(() => GenerateNewChunk(chunkPosition));
             
             return null;
         }
         
-        private void GenerateNewChunk(Vector2 chunkPosition, ITextureStorage storage)
+        private void GenerateNewChunk(Vector2 chunkPosition)
         {
             var map = GenerateChunkMap(chunkPosition);
-            var chunk = new Chunk(chunkPosition, map, storage);
+            var chunk = new Chunk(chunkPosition, map);
             foreach (var environmentGenerator in environmentGenerators)
             {
                 environmentGenerator.AddEnvironment(chunk);   

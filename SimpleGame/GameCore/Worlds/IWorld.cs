@@ -10,6 +10,5 @@ namespace SimpleGame.GameCore.Worlds
         BaseChunk GetChunk(Vector2 chunkPosition);
         IEnumerable<BaseChunk> GetChunksInRadius(Vector2 anchor, int chunkRenderRadius);
         void Update(TimeSpan delta);
-        ITextureStorage TextureStorage { get; set; }
     }
 }

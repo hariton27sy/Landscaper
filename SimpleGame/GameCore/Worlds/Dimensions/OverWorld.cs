@@ -15,13 +15,12 @@ namespace SimpleGame.GameCore.Worlds
         private readonly Dictionary<Vector2, BaseChunk> chunks = new Dictionary<Vector2, BaseChunk>();
         
         private readonly IPlayer player;
-        public ITextureStorage TextureStorage { get; set; }
 
         public BaseChunk GetChunk(Vector2 chunkPosition)
         {
             if (chunks.TryGetValue(chunkPosition, out var chunk))
                 return chunk;
-            chunk = terrainGenerator.GenerateChunk(chunkPosition, TextureStorage);
+            chunk = terrainGenerator.GenerateChunk(chunkPosition);
             if (chunk != null)
                 chunks.Add(chunkPosition, chunk);
             return chunk;
