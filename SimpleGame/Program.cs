@@ -23,8 +23,10 @@ namespace SimpleGame
             
             var seed = new Random().Next(int.MaxValue);
             
-            container.Bind<IEnvironmentGenerator>().To<TreeGenerator>().WithConstructorArgument("seed", seed);
-            container.Bind<IEnvironmentGenerator>().To<CactusGenerator>().WithConstructorArgument("seed", seed);
+            container.Bind<IEnvironmentGenerator>().To<TreeGenerator>()
+                .WithConstructorArgument("seed", seed);
+            container.Bind<IEnvironmentGenerator>().To<CactusGenerator>()
+                .WithConstructorArgument("seed", seed);
             container.Bind<ITerrainGenerator>().To<TerrainGenerator>()
                 .WithConstructorArgument("seed", seed)
                 .WithConstructorArgument("surfaceGenerator", new NoiseGenerator(seed, 4))
