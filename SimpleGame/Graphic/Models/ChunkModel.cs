@@ -158,7 +158,7 @@ namespace SimpleGame.Graphic.Models
             GL.DisableVertexAttribArray(0);
             GL.DisableVertexAttribArray(2);
             
-            GlHelper.VaoBinder(0);
+            // GlHelper.VaoBinder(0);
             isDisposed = true;
         }
 
