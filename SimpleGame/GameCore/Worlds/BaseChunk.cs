@@ -8,10 +8,10 @@ namespace SimpleGame.GameCore.Worlds
     {
         public abstract bool IsModified { get; set; }
         public abstract Matrix4 TransformMatrix { get; }
-        public static int Width;
-        public static int Height;
-        public static int Length;
-        public readonly int[,,] Map;
+        public static int Width => 16;
+        public static int Height = 256;
+        public static int Length => 16;
+        public int[,,] Map { get; protected set; }
         public abstract IModel GetModel(ITextureStorage storage, ICamera camera);
     }
 }

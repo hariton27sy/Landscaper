@@ -13,9 +13,6 @@ namespace SimpleGame.GameCore.Worlds
         public static int Height => 256;
         public static int Length => 16;
         private bool pendingModel;
-        
-
-        public readonly int[,,] Map;
 
         public override bool IsModified
         {

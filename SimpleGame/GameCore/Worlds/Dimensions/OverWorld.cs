@@ -55,17 +55,7 @@ namespace SimpleGame.GameCore.Worlds
             this.terrainGenerator = terrainGenerator;
         }
 
-        private IEnumerable<Vector3> GetVertices(BoundaryBox b)
-        {
-            yield return new Vector3(b.Start);
-            yield return new Vector3(b.Start.X, b.Start.Y, b.End.Z);
-            yield return new Vector3(b.Start.X, b.End.Y, b.Start.Z);
-            yield return new Vector3(b.Start.X, b.End.Y, b.End.Z);
-            yield return new Vector3(b.End.X, b.Start.Y, b.Start.Z);
-            yield return new Vector3(b.End.X, b.Start.Y, b.End.Z);
-            yield return new Vector3(b.End.X, b.End.Y, b.Start.Z);
-            yield return new Vector3(b.End.X, b.End.Y, b.End.Z);
-        }
+        
 
         private BoundaryBox BlockBoundary(int x, int y, int z)
         {
@@ -77,10 +67,20 @@ namespace SimpleGame.GameCore.Worlds
         }
         private BoundaryBox? GetNearestBlock(BoundaryBox boundaryBox, Vector3 delta)
         {
+            var newPos = boundaryBox + delta;
+
+            var result = newPos.GetVertices()
+                .Where(v => GetBlockId(v) != 0)
+                .Select(BoundaryBox.IntBoxFromVector)
+                .OrderBy(b => boundaryBox.DistanceTo(b))
+                .FirstOrDefault();
+            return result.Start == Vector3.Zero && result.End == Vector3.Zero ? (BoundaryBox?) null : result;
+            
+            
             const int partitions = 10;
             for (int i = 0; i < partitions; i++)
             {
-                foreach (var vertex in GetVertices(boundaryBox))
+                foreach (var vertex in boundaryBox.GetVertices())
                 {
                     var offset = (delta / partitions * i) + vertex;
                     for (int x = (int) vertex.X; x < offset.X; x++)
@@ -132,7 +132,7 @@ namespace SimpleGame.GameCore.Worlds
             try
             {
                 var chunk = GetChunk(new Vector2(chunkX, chunkZ));
-                return chunk is null ? 1 : GetChunk(new Vector2(chunkX, chunkZ)).Map[x, y, z];
+                return chunk?.Map[x, y, z] ?? 0;
             }
             catch (IndexOutOfRangeException)
             {

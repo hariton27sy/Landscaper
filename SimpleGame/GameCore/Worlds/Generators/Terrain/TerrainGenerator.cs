@@ -137,7 +137,9 @@ namespace SimpleGame.GameCore.Worlds
         
         private void GenerateNewChunk(Vector2 chunkPosition, ITextureStorage storage)
         {
-            var chunk = new Chunk(chunkPosition, GenerateChunkMap(chunkPosition), storage);
+            var map = GenerateChunkMap(chunkPosition);
+            var chunk = new Chunk(chunkPosition, map, storage);
+            Console.WriteLine(chunk.Map);
             foreach (var environmentGenerator in environmentGenerators)
             {
                 environmentGenerator.AddEnvironment(chunk);   
