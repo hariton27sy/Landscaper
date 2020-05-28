@@ -40,7 +40,7 @@ namespace SimpleGame
             container.Bind<ITextureStorage>()
                 .ToConstructor(_ => new TextureStorage("textures"));
             
-            container.Bind<IStaticShader>().To<StaticShader>();
+            container.Bind<IShader>().To<StaticShader>();
             container.Bind<IRenderer>().To<Renderer>();
             container.Bind<GameWindow>().To<Game>();
             var game = container.Get<Game>();

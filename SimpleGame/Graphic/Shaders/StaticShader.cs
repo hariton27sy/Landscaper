@@ -6,21 +6,6 @@ using OpenTK.Graphics.OpenGL;
 
 namespace SimpleGame.Graphic.Shaders
 {
-    public interface IStaticShader : IDisposable
-    {
-        public int GetProgramId();
-        void SetViewMatrix(Matrix4 matrix);
-        void SetProjectionMatrix(Matrix4 matrix);
-        void SetTransformationMatrix(Matrix4 matrix);
-        void SetIsTextured(bool isTextured);
-        bool IsActive { get; }
-        void BindAttributes();
-        void BindUniformVariables();
-        IStaticShader Start();
-        void Remove();
-        void Initialize();
-    }
-
     public class StaticShader : Shader
     {
         private const string VertexShaderFilename = "Graphic/Shaders/colored.vert";

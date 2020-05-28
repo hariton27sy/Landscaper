@@ -6,7 +6,7 @@ using OpenTK.Graphics.OpenGL;
 
 namespace SimpleGame.Graphic.Shaders
 {
-    public abstract class Shader : IStaticShader
+    public abstract class Shader : IShader
     {
         public int GetProgramId()
         {
@@ -30,7 +30,7 @@ namespace SimpleGame.Graphic.Shaders
         protected readonly List<int> shadersIds = new List<int>();
         private int programId;
 
-        public IStaticShader Start()
+        public IShader Start()
         {
             usingCounter++;
             if (programId == 0)

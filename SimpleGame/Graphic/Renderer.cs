@@ -29,9 +29,9 @@ namespace SimpleGame.Graphic
                     aspect, 0.01f, 1000));
         }
 
-        private readonly IStaticShader shader;
+        private readonly IShader shader;
 
-        public Renderer(IStaticShader shader)
+        public Renderer(IShader shader)
         {
             this.shader = shader;
         }
