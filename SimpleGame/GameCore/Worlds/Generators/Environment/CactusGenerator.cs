@@ -1,7 +1,7 @@
 using System;
 using SimpleGame.textures;
 
-namespace SimpleGame.GameCore.Worlds
+namespace SimpleGame.GameCore.Worlds.Generators.Environment
 {
     public class CactusGenerator : IEnvironmentGenerator
     {
@@ -13,7 +13,7 @@ namespace SimpleGame.GameCore.Worlds
         public CactusGenerator(int seed)
         {
             this.seed = seed;
-            random = new Random(seed);  
+            random = new Random(this.seed);  
         }
 
         public void AddEnvironment(Chunk chunk)

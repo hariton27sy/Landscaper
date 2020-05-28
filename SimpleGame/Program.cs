@@ -5,6 +5,7 @@ using Ninject.Parameters;
 using OpenTK;
 using SimpleGame.GameCore.Persons;
 using SimpleGame.GameCore.Worlds;
+using SimpleGame.GameCore.Worlds.Generators.Environment;
 using SimpleGame.Graphic.Models;
 using SimpleGame.textures;
 
