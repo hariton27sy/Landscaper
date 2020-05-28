@@ -29,13 +29,29 @@ namespace SimpleGame.GameCore.Worlds
         
         public IEnumerable<BaseChunk> GetChunksInRadius(Vector2 anchor, int chunkRenderRadius)
         {
-            var map = new bool[2 * chunkRenderRadius, 2 * chunkRenderRadius];
+            var visited = new bool[2 * chunkRenderRadius, 2 * chunkRenderRadius];
             var shifts = new Queue<(int, int)>();
-            
-            for (int dx = -chunkRenderRadius; dx <= chunkRenderRadius; dx++)
-            for (int dy = -chunkRenderRadius; dy <= chunkRenderRadius; dy++)
+            shifts.Enqueue((0, 0));
+            var offsets = new List<(int, int)> {(0, -1), (0, 1), (-1, 0), (1, 0)};
+
+            while (shifts.Count != 0)
             {
-                var translation = new Vector2(dx, dy);
+                var position = shifts.Dequeue();
+                foreach (var offset in offsets)
+                {
+                    try
+                    {
+                        if (visited[chunkRenderRadius + position.Item1 + offset.Item1, chunkRenderRadius + position.Item2 + offset.Item2])
+                            continue;
+                    }
+                    catch (Exception)
+                    {
+                        continue;
+                    }
+                    visited[chunkRenderRadius + position.Item1 + offset.Item1, chunkRenderRadius + position.Item2 + offset.Item2] = true;
+                    shifts.Enqueue((position.Item1 + offset.Item1, position.Item2 + offset.Item2));
+                }
+                var translation = new Vector2(position.Item1, position.Item2);
                 var chunk = GetChunk(anchor + translation);
                 if (chunk != null)
                     yield return chunk;
