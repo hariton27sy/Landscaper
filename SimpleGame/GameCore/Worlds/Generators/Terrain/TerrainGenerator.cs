@@ -13,8 +13,7 @@ namespace SimpleGame.GameCore.Worlds
 {
     public class TerrainGenerator : ITerrainGenerator
     {
-        private const int SandLevel = 62;
-        private const int SeaLevel = 60;
+        private const int SeaLevel = 64;
         private const int LayerSize = 3;
         
         private readonly INoiseGenerator surfaceGenerator;
@@ -86,11 +85,6 @@ namespace SimpleGame.GameCore.Worlds
                         BiomeType.Hills => BlockType.SnowGrass,
                         _ => BlockType.Grass
                     };
-
-                    if (height < SandLevel)
-                    {
-                        block = BlockType.Sand;
-                    }
 
                     result[x, height, z] = (int) block;
 
