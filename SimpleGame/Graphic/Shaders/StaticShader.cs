@@ -39,7 +39,6 @@ namespace SimpleGame.Graphic.Shaders
         {
             ShadersFilenames.Add(ShaderType.VertexShader, VertexShaderFilename);
             ShadersFilenames.Add(ShaderType.FragmentShader, FragmentShader);
-            Initialize();
         }
 
         protected override void BindAttributes()

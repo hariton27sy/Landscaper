@@ -44,7 +44,7 @@ namespace SimpleGame.Graphic.Shaders
         protected abstract void BindAttributes();
         protected abstract void BindUniformVariables();
 
-        protected void Initialize()
+        public void Initialize()
         {
             LoadShaders();
             ProgramId = GL.CreateProgram();
@@ -58,7 +58,6 @@ namespace SimpleGame.Graphic.Shaders
 
         protected void LoadShaders()
         {
-            // TODO: Add error handling
             foreach (var shader in ShadersFilenames)
             {
                 var id = GL.CreateShader(shader.Key);

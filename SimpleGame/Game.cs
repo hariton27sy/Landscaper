@@ -23,11 +23,12 @@ namespace SimpleGame
         private DateTime previousTime;
         private MouseState previousMouseState;
 
-        public Game(IWorld world, IPlayer player, ITextureStorage textures)
+        public Game(IWorld world, IPlayer player, ITextureStorage textures, Renderer renderer)
         {
             World = world;
             Player = player;
             this.textures = textures;
+            this.renderer = renderer;
             Load += OnLoad;
             VSync = VSyncMode.On;
         }
@@ -35,7 +36,7 @@ namespace SimpleGame
         private void OnLoad(object sender, EventArgs e)
         {
             textures.LoadTextures();
-            renderer = new Renderer(new StaticShader());
+            renderer.Start();
             KeyDown += OnKeyDown;
             KeyUp += OnKeyUp;
             UpdateFrame += UpdateState;

@@ -8,7 +8,9 @@ using SimpleGame.GameCore.Worlds;
 using SimpleGame.GameCore.Worlds.Dimensions;
 using SimpleGame.GameCore.Worlds.Generators.Environment;
 using SimpleGame.GameCore.Worlds.Generators.Terrain;
+using SimpleGame.Graphic;
 using SimpleGame.Graphic.Models;
+using SimpleGame.Graphic.Shaders;
 using SimpleGame.textures;
 
 namespace SimpleGame
@@ -37,7 +39,9 @@ namespace SimpleGame
             container.Bind<IWorld>().To<OverWorld>();
             container.Bind<ITextureStorage>()
                 .ToConstructor(_ => new TextureStorage("textures"));
+            container.Bind<Renderer>().ToConstant(new Renderer(new StaticShader()));
             container.Bind<GameWindow>().To<Game>()
+                
                 .OnActivation(g => g.Run());
             var game = container.Get<Game>();
             game.Run();

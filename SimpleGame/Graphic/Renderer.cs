@@ -35,6 +35,11 @@ namespace SimpleGame.Graphic
         public Renderer(StaticShader shader)
         {
             this.shader = shader;
+        }
+
+        public void Start()
+        {
+            shader.Initialize();
             using (shader.Start())
             {
                 shader.ProjectionMatrix = ProjectionMatrix;
