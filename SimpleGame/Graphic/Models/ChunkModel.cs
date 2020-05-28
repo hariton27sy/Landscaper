@@ -17,7 +17,7 @@ namespace SimpleGame.Graphic.Models
         private readonly List<int> indices = new List<int>();
         private int lastIndex;
         
-        private readonly Chunk chunk;
+        private readonly BaseChunk chunk;
         private readonly ITextureStorage storage;
         private bool shouldLoadToGl;
 
@@ -27,7 +27,7 @@ namespace SimpleGame.Graphic.Models
         private int indicesVbo;
         private int vao = -1;
 
-        public ChunkModel(Chunk chunk, ITextureStorage storage)
+        public ChunkModel(BaseChunk chunk, ITextureStorage storage)
         {
             this.chunk = chunk;
             this.storage = storage;
@@ -37,9 +37,9 @@ namespace SimpleGame.Graphic.Models
 
         public void UpdateModel()
         {
-            for (var y = 0; y < Chunk.Height; y++)
-            for (var x = 0; x < Chunk.Width; x++)
-            for (var z = 0; z < Chunk.Length; z++)
+            for (var y = 0; y < BaseChunk.Height; y++)
+            for (var x = 0; x < BaseChunk.Width; x++)
+            for (var z = 0; z < BaseChunk.Length; z++)
             {
                 if (chunk.Map[x, y, z] != 0)
                     AddBlock(x, y, z);

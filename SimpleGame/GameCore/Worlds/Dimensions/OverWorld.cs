@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using OpenTK;
 using SimpleGame.GameCore.Persons;
+using SimpleGame.GameCore.Worlds.Generators.Terrain;
 
 namespace SimpleGame.GameCore.Worlds.Dimensions
 {

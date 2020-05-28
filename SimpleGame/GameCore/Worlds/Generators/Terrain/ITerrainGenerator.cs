@@ -1,7 +1,6 @@
 using OpenTK;
-using SimpleGame.Graphic.Models;
 
-namespace SimpleGame.GameCore.Worlds
+namespace SimpleGame.GameCore.Worlds.Generators.Terrain
 {
     public interface ITerrainGenerator
     {

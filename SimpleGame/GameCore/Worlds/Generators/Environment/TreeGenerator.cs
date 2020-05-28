@@ -41,15 +41,15 @@ namespace SimpleGame.GameCore.Worlds.Generators.Environment
             return tree;
         }
 
-        public void AddEnvironment(Chunk chunk)
+        public void AddEnvironment(BaseChunk chunk)
         {
             const int safeBorder = 2;
             var count = random.Next(maxTreeCountInChunk);
             for (var treeCount = 0; treeCount < count; treeCount++)
             {
-                var x = random.Next(safeBorder, Chunk.Width - safeBorder);
-                var z = random.Next(safeBorder, Chunk.Length - safeBorder);
-                var top = Chunk.Height;
+                var x = random.Next(safeBorder, BaseChunk.Width - safeBorder);
+                var z = random.Next(safeBorder, BaseChunk.Length - safeBorder);
+                var top = BaseChunk.Height;
                 for (; top > 0; top--)
                 {
                     if (chunk.Map[x, top - 1, z] != 0)
@@ -63,7 +63,7 @@ namespace SimpleGame.GameCore.Worlds.Generators.Environment
             }
         }
         
-        private static bool TryPlaceEnvironment(EnvironmentObject obj, Chunk chunk, Vector3 anchor)
+        private static bool TryPlaceEnvironment(EnvironmentObject obj, BaseChunk chunk, Vector3 anchor)
         {
             const bool noExcess = true;
             foreach (var (offset, blockId) in obj.Parts)
@@ -72,7 +72,7 @@ namespace SimpleGame.GameCore.Worlds.Generators.Environment
                 var y = (int) (offset.Y + anchor.Y);
                 var z = (int) (offset.Z + anchor.Z);
                 
-                var chunkPositionOffset = (x / Chunk.Width, z / Chunk.Length);
+                var chunkPositionOffset = (x / BaseChunk.Width, z / BaseChunk.Length);
 
                 if (chunkPositionOffset == (0, 0))
                 {

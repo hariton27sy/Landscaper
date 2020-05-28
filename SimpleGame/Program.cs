@@ -7,6 +7,7 @@ using SimpleGame.GameCore.Persons;
 using SimpleGame.GameCore.Worlds;
 using SimpleGame.GameCore.Worlds.Dimensions;
 using SimpleGame.GameCore.Worlds.Generators.Environment;
+using SimpleGame.GameCore.Worlds.Generators.Terrain;
 using SimpleGame.Graphic.Models;
 using SimpleGame.textures;
 

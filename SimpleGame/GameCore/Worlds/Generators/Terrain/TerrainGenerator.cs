@@ -1,15 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
 using System.Threading.Tasks;
 using OpenTK;
-using OpenTK.Graphics.ES20;
 using SimpleGame.GameCore.Worlds.Generators.Environment;
-using SimpleGame.Graphic.Models;
 using SimpleGame.textures;
 
-namespace SimpleGame.GameCore.Worlds
+namespace SimpleGame.GameCore.Worlds.Generators.Terrain
 {
     public class TerrainGenerator : ITerrainGenerator
     {
