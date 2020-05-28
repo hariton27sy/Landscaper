@@ -6,6 +6,7 @@ using OpenTK;
 using SimpleGame.GameCore.Persons;
 using SimpleGame.GameCore.Worlds;
 using SimpleGame.GameCore.Worlds.Dimensions;
+using SimpleGame.GameCore.Worlds.Generators;
 using SimpleGame.GameCore.Worlds.Generators.Environment;
 using SimpleGame.GameCore.Worlds.Generators.Terrain;
 using SimpleGame.Graphic;
@@ -38,7 +39,7 @@ namespace SimpleGame
             container.Bind<IWorld>().To<OverWorld>();
             container.Bind<ITextureStorage>()
                 .ToConstructor(_ => new TextureStorage("textures"));
-            // container.Bind<Shader>().ToConstant(new StaticShader());
+            
             container.Bind<IStaticShader>().To<StaticShader>();
             container.Bind<IRenderer>().To<Renderer>();
             container.Bind<GameWindow>().To<Game>();

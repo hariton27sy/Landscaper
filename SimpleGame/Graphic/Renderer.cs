@@ -12,21 +12,21 @@ namespace SimpleGame.Graphic
     {
         private Matrix4 projectionMatrix = Matrix4.Identity;
 
-        public Matrix4 ProjectionMatrix
+        public Matrix4 GetProjectionMatrix()
         {
-            get => projectionMatrix;
-            set
-            {
-                projectionMatrix = value;
-                shader.ProjectionMatrix = value;
-            }
+            return projectionMatrix;
         }
 
-        public float Aspect
+        public void SetProjectionMatrix(Matrix4 matrix)
         {
-            set =>
-                ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(90), 
-                    value, 0.01f, 1000);
+            projectionMatrix = matrix;
+            shader.SetProjectionMatrix(matrix);
+        }
+
+        public void SetAspect(float aspect)
+        {
+            SetProjectionMatrix(Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(90),
+                    aspect, 0.01f, 1000));
         }
 
         private readonly IStaticShader shader;
@@ -41,7 +41,7 @@ namespace SimpleGame.Graphic
             shader.Initialize();
             using (shader.Start())
             {
-                shader.ProjectionMatrix = ProjectionMatrix;
+                shader.SetProjectionMatrix(GetProjectionMatrix());
             }
             GL.Enable(EnableCap.DepthTest);
         }
@@ -63,9 +63,9 @@ namespace SimpleGame.Graphic
                         continue;
                     using (model.Start())
                     {
-                        shader.IsTextured = model.IsTextured;
-                        shader.TransformationMatrix = entity.TransformMatrix;
-                        shader.ViewMatrix = camera.ViewMatrix;
+                        shader.SetIsTextured(model.IsTextured);
+                        shader.SetProjectionMatrix(entity.TransformMatrix);
+                        shader.SetViewMatrix(camera.ViewMatrix);
                         GL.DrawElements(model.DrawingMode, model.VerticesCount, 
                             DrawElementsType.UnsignedInt, 0);
                     }

@@ -8,20 +8,34 @@ namespace SimpleGame.Graphic.Shaders
 {
     public abstract class Shader : IStaticShader
     {
-        public int ProgramId { get; private set; }
-        public bool IsActive { get; private set; }
-
-        protected Dictionary<ShaderType, string> ShadersFilenames = new Dictionary<ShaderType, string>();
+        public int GetProgramId()
+        {
+            return programId;
+        }
         
-        private List<int> ShadersIds = new List<int>();
-        private int usingCounter;
+        private void SetProgramId(int id)
+        {
+            programId = id;
+        }
 
-        public Shader Start()
+
+        public abstract void SetIsTextured(bool isTextured);
+
+        public bool IsActive { get; private set; }
+        
+        private int usingCounter;
+        
+        protected readonly Dictionary<ShaderType, string> shadersFilenames = new Dictionary<ShaderType, string>();
+        
+        protected readonly List<int> shadersIds = new List<int>();
+        private int programId;
+
+        public IStaticShader Start()
         {
             usingCounter++;
-            if (ProgramId == 0)
+            if (programId == 0)
                 throw new Exception("Program is delete or has errors");
-            GL.UseProgram(ProgramId);
+            GL.UseProgram(programId);
             IsActive = true;
             return this;
         }
@@ -37,8 +51,8 @@ namespace SimpleGame.Graphic.Shaders
 
         public void Remove()
         {
-            GL.DeleteProgram(ProgramId);
-            ProgramId = 0;
+            GL.DeleteProgram(programId);
+            programId = 0;
         }
 
         public abstract void BindAttributes();
@@ -47,37 +61,24 @@ namespace SimpleGame.Graphic.Shaders
         public void Initialize()
         {
             LoadShaders();
-            ProgramId = GL.CreateProgram();
+            SetProgramId(GL.CreateProgram());
             AttachShaders();
             BindAttributes();
-            GL.LinkProgram(ProgramId);
-            Console.Error.WriteLine($"Linking program. Errors:\n{GL.GetProgramInfoLog(ProgramId)}");
+            GL.LinkProgram(programId);
+            Console.Error.WriteLine($"Linking program. Errors:\n{GL.GetProgramInfoLog(programId)}");
             DeleteShaders();
             BindUniformVariables();
         }
-
-        protected void LoadShaders()
-        {
-            foreach (var shader in ShadersFilenames)
-            {
-                var id = GL.CreateShader(shader.Key);
-                GL.ShaderSource(id, File.ReadAllText(shader.Value));
-                GL.CompileShader(id);
-                var errors = GL.GetShaderInfoLog(id);
-                Console.Error.WriteLine($"Loading {shader.Key}\nfrom file: {shader.Value}\nErrors: {(errors == "" ? "No errors" : errors)}\n");
-
-                ShadersIds.Add(id);
-            }
-        }
+        public abstract void LoadShaders();
 
         protected void BindAttribute(int attribute, string attributeName)
         {
-            GL.BindAttribLocation(ProgramId, attribute, attributeName);
+            GL.BindAttribLocation(programId, attribute, attributeName);
         }
 
         protected int BindUniformVariable(string variableName)
         {
-            return GL.GetUniformLocation(ProgramId, variableName);
+            return GL.GetUniformLocation(programId, variableName);
         }
 
         protected void LoadMatrix4(int uniformId, Matrix4 matrix)
@@ -98,27 +99,24 @@ namespace SimpleGame.Graphic.Shaders
             }
         }
 
-        private void AttachShaders()
+        public void AttachShaders()
         {
-            foreach (var shader in ShadersIds)
+            foreach (var shader in shadersIds)
             {
-                GL.AttachShader(ProgramId, shader);
+                GL.AttachShader(programId, shader);
             }
         }
 
-        private void DeleteShaders()
+        public void DeleteShaders()
         {
-            foreach (var shader in ShadersIds)
+            foreach (var shader in shadersIds)
             {
                 GL.DeleteShader(shader);
             }
         }
-        
-        public abstract Matrix4 ViewMatrix { set; }
-        public abstract Matrix4 ProjectionMatrix { set; }
 
-        public abstract Matrix4 TransformationMatrix  { set; }
-        
-        public abstract bool IsTextured { set; }
+        public abstract void SetViewMatrix(Matrix4 matrix);
+        public abstract void SetProjectionMatrix(Matrix4 matrix);
+        public abstract void SetTransformationMatrix(Matrix4 matrix);
     }
 }

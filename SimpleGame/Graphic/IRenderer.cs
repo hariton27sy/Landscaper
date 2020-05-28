@@ -7,8 +7,7 @@ namespace SimpleGame.Graphic
 {
     public interface IRenderer
     {
-        Matrix4 ProjectionMatrix { get; set; }
-        float Aspect { set; }
+        void SetAspect(float aspect);
         void Start();
         void Clear(Color color=default);
         void Render(ICamera camera, ITextureStorage storage, IEnumerable<IEntity> entities);

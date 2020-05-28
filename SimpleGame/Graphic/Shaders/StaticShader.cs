@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
@@ -6,15 +8,15 @@ namespace SimpleGame.Graphic.Shaders
 {
     public interface IStaticShader : IDisposable
     {
-        Matrix4 ViewMatrix { set; }
-        Matrix4 ProjectionMatrix { set; }
-        Matrix4 TransformationMatrix { set; }
-        bool IsTextured { set; }
-        int ProgramId { get; }
+        public int GetProgramId();
+        void SetViewMatrix(Matrix4 matrix);
+        void SetProjectionMatrix(Matrix4 matrix);
+        void SetTransformationMatrix(Matrix4 matrix);
+        void SetIsTextured(bool isTextured);
         bool IsActive { get; }
         void BindAttributes();
         void BindUniformVariables();
-        Shader Start();
+        IStaticShader Start();
         void Remove();
         void Initialize();
     }
@@ -26,35 +28,32 @@ namespace SimpleGame.Graphic.Shaders
 
         private int viewMatrix, projectionMatrix, transformationMatrix;
         private int isTextured;
-
-        public override Matrix4 ViewMatrix
+        
+        public override void SetViewMatrix(Matrix4 matrix)
         {
-            set => LoadMatrix4(viewMatrix, value);
+            LoadMatrix4(viewMatrix, matrix);
         }
 
-        public override Matrix4 ProjectionMatrix
+        public override void SetProjectionMatrix(Matrix4 matrix)
         {
-            set => LoadMatrix4(projectionMatrix, value);
+            LoadMatrix4(projectionMatrix, matrix);
         }
 
-        public override Matrix4 TransformationMatrix
+        public override void SetTransformationMatrix(Matrix4 matrix)
         {
-            set => LoadMatrix4(transformationMatrix, value);
+            LoadMatrix4(transformationMatrix, matrix);
         }
 
-        public override bool IsTextured {
-            set
-            {
-                var number = value ? 1f : 0;
-                LoadFloat(isTextured, number);
-            }
+        public override void SetIsTextured(bool value)
+        {
+            var number = value ? 1f : 0;
+            LoadFloat(isTextured, number);
         }
-
-
+        
         public StaticShader()
         {
-            ShadersFilenames.Add(ShaderType.VertexShader, VertexShaderFilename);
-            ShadersFilenames.Add(ShaderType.FragmentShader, FragmentShader);
+            shadersFilenames.Add(ShaderType.VertexShader, VertexShaderFilename);
+            shadersFilenames.Add(ShaderType.FragmentShader, FragmentShader);
         }
 
         public override void BindAttributes()
@@ -70,6 +69,21 @@ namespace SimpleGame.Graphic.Shaders
             projectionMatrix = BindUniformVariable("projectionMatrix");
             viewMatrix = BindUniformVariable("viewMatrix");
             isTextured = BindUniformVariable("isTextured");
+        }
+
+        public override void LoadShaders()
+        
+        {
+            foreach (var shader in shadersFilenames)
+            {
+                var id = GL.CreateShader(shader.Key);
+                GL.ShaderSource(id, File.ReadAllText(shader.Value));
+                GL.CompileShader(id);
+                var errors = GL.GetShaderInfoLog(id);
+                Console.Error.WriteLine($"Loading {shader.Key}\nfrom file: {shader.Value}\nErrors: {(errors == "" ? "No errors" : errors)}\n");
+
+                shadersIds.Add(id);
+            }
         }
     }
 }

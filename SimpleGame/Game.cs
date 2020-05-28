@@ -46,7 +46,7 @@ namespace SimpleGame
                 if (!CursorVisible)
                     Mouse.SetPosition(X + Width / 2f, Y + Height / 2f);
             };
-            renderer.Aspect = (float) Width / Height;
+            renderer.SetAspect((float) Width / Height);
             previousTime = DateTime.Now;
         }
 

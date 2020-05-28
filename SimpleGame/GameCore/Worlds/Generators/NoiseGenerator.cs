@@ -1,14 +1,7 @@
 using System;
-using System.Collections.Generic;
-using OpenTK.Platform.Windows;
 
-namespace SimpleGame.GameCore.Worlds
+namespace SimpleGame.GameCore.Worlds.Generators
 {
-    public interface INoiseGenerator
-    {
-        double Noise(int x, int y);
-    }
-
     public class NoiseGenerator : INoiseGenerator
     {
         private int Seed { get; }
