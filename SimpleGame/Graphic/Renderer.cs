@@ -64,7 +64,7 @@ namespace SimpleGame.Graphic
                     using (model.Start())
                     {
                         shader.SetIsTextured(model.IsTextured);
-                        shader.SetProjectionMatrix(entity.TransformMatrix);
+                        shader.SetTransformationMatrix(entity.TransformMatrix);
                         shader.SetViewMatrix(camera.ViewMatrix);
                         GL.DrawElements(model.DrawingMode, model.VerticesCount, 
                             DrawElementsType.UnsignedInt, 0);
