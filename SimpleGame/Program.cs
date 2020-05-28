@@ -33,16 +33,15 @@ namespace SimpleGame
                 .WithConstructorArgument("seed", seed)
                 .WithConstructorArgument("surfaceGenerator", new NoiseGenerator(seed, 4))
                 .WithConstructorArgument("biomeGenerator", new NoiseGenerator(seed, 5));
-            
             container.Bind<Vector3>().ToConstant(new Vector3(1, 100, 1));
             container.Bind<IPlayer>().To<Player>().InSingletonScope();
             container.Bind<IWorld>().To<OverWorld>();
             container.Bind<ITextureStorage>()
                 .ToConstructor(_ => new TextureStorage("textures"));
-            container.Bind<Renderer>().ToConstant(new Renderer(new StaticShader()));
-            container.Bind<GameWindow>().To<Game>()
-                
-                .OnActivation(g => g.Run());
+            // container.Bind<Shader>().ToConstant(new StaticShader());
+            container.Bind<IStaticShader>().To<StaticShader>();
+            container.Bind<IRenderer>().To<Renderer>();
+            container.Bind<GameWindow>().To<Game>();
             var game = container.Get<Game>();
             game.Run();
         }

@@ -6,7 +6,7 @@ using OpenTK.Graphics.OpenGL;
 
 namespace SimpleGame.Graphic.Shaders
 {
-    public abstract class Shader : IDisposable
+    public abstract class Shader : IStaticShader
     {
         public int ProgramId { get; private set; }
         public bool IsActive { get; private set; }
@@ -41,8 +41,8 @@ namespace SimpleGame.Graphic.Shaders
             ProgramId = 0;
         }
 
-        protected abstract void BindAttributes();
-        protected abstract void BindUniformVariables();
+        public abstract void BindAttributes();
+        public abstract void BindUniformVariables();
 
         public void Initialize()
         {
@@ -113,5 +113,12 @@ namespace SimpleGame.Graphic.Shaders
                 GL.DeleteShader(shader);
             }
         }
+        
+        public abstract Matrix4 ViewMatrix { set; }
+        public abstract Matrix4 ProjectionMatrix { set; }
+
+        public abstract Matrix4 TransformationMatrix  { set; }
+        
+        public abstract bool IsTextured { set; }
     }
 }

@@ -1,8 +1,24 @@
-﻿using OpenTK;
+﻿using System;
+using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
 namespace SimpleGame.Graphic.Shaders
 {
+    public interface IStaticShader : IDisposable
+    {
+        Matrix4 ViewMatrix { set; }
+        Matrix4 ProjectionMatrix { set; }
+        Matrix4 TransformationMatrix { set; }
+        bool IsTextured { set; }
+        int ProgramId { get; }
+        bool IsActive { get; }
+        void BindAttributes();
+        void BindUniformVariables();
+        Shader Start();
+        void Remove();
+        void Initialize();
+    }
+
     public class StaticShader : Shader
     {
         private const string VertexShaderFilename = "Graphic/Shaders/colored.vert";
@@ -11,22 +27,22 @@ namespace SimpleGame.Graphic.Shaders
         private int viewMatrix, projectionMatrix, transformationMatrix;
         private int isTextured;
 
-        public Matrix4 ViewMatrix
+        public override Matrix4 ViewMatrix
         {
             set => LoadMatrix4(viewMatrix, value);
         }
 
-        public Matrix4 ProjectionMatrix
+        public override Matrix4 ProjectionMatrix
         {
             set => LoadMatrix4(projectionMatrix, value);
         }
 
-        public Matrix4 TransformationMatrix
+        public override Matrix4 TransformationMatrix
         {
             set => LoadMatrix4(transformationMatrix, value);
         }
 
-        public bool IsTextured {
+        public override bool IsTextured {
             set
             {
                 var number = value ? 1f : 0;
@@ -41,14 +57,14 @@ namespace SimpleGame.Graphic.Shaders
             ShadersFilenames.Add(ShaderType.FragmentShader, FragmentShader);
         }
 
-        protected override void BindAttributes()
+        public override void BindAttributes()
         {
             BindAttribute(0, "position");
             BindAttribute(1, "in_color");
             BindAttribute(2, "tex_coords");
         }
 
-        protected override void BindUniformVariables()
+        public override void BindUniformVariables()
         {
             transformationMatrix = BindUniformVariable("transformationMatrix");
             projectionMatrix = BindUniformVariable("projectionMatrix");

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Threading;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using SimpleGame.Graphic.Models;
@@ -9,7 +8,7 @@ using SimpleGame.Graphic.Shaders;
 
 namespace SimpleGame.Graphic
 {
-    public class Renderer
+    public class Renderer : IRenderer
     {
         private Matrix4 projectionMatrix = Matrix4.Identity;
 
@@ -30,9 +29,9 @@ namespace SimpleGame.Graphic
                     value, 0.01f, 1000);
         }
 
-        private readonly StaticShader shader;
+        private readonly IStaticShader shader;
 
-        public Renderer(StaticShader shader)
+        public Renderer(IStaticShader shader)
         {
             this.shader = shader;
         }
