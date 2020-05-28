@@ -1,7 +1,4 @@
-using System;
-using OpenTK;
-
-namespace SimpleGame.GameCore.Worlds
+namespace SimpleGame.GameCore.Worlds.Generators.Environment
 {
     public interface IEnvironmentGenerator
     {

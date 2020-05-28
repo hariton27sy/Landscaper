@@ -12,13 +12,13 @@ namespace SimpleGame.Graphic.Models
 {
     public class ChunkModel : IModel
     {
-        private List<float> vertices = new List<float>();
-        private List<float> textureCoords = new List<float>();
-        private List<int> indices = new List<int>();
+        private readonly List<float> vertices = new List<float>();
+        private readonly List<float> textureCoords = new List<float>();
+        private readonly List<int> indices = new List<int>();
         private int lastIndex;
         
-        private Chunk chunk;
-        private ITextureStorage storage;
+        private readonly Chunk chunk;
+        private readonly ITextureStorage storage;
         private bool shouldLoadToGl;
 
         private bool isDisposed;
@@ -93,7 +93,7 @@ namespace SimpleGame.Graphic.Models
             {
                 neighbour = chunk.Map[x + dx, y + dy, z + dz];
             }
-            catch (IndexOutOfRangeException e)
+            catch (IndexOutOfRangeException)
             {
                 return false;
             }
@@ -139,14 +139,14 @@ namespace SimpleGame.Graphic.Models
             lastIndex += 4;
         }
 
-        private void AddFace(Vector3[] vertices, Vector3 offset)
+        private void AddFace(Vector3[] faceVertices, Vector3 offset)
         {
-            foreach (var vertex in vertices)
+            foreach (var vertex in faceVertices)
             {
-                var _vertex = vertex + offset;
-                this.vertices.Add(_vertex.X);
-                this.vertices.Add(_vertex.Y);
-                this.vertices.Add(_vertex.Z);
+                var position = vertex + offset;
+                vertices.Add(position.X);
+                vertices.Add(position.Y);
+                vertices.Add(position.Z);
             }
         }
 

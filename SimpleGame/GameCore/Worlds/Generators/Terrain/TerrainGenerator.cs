@@ -5,6 +5,7 @@ using System.IO;
 using System.Threading.Tasks;
 using OpenTK;
 using OpenTK.Graphics.ES20;
+using SimpleGame.GameCore.Worlds.Generators.Environment;
 using SimpleGame.Graphic.Models;
 using SimpleGame.textures;
 

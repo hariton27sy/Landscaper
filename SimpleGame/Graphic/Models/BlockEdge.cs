@@ -1,4 +1,4 @@
-﻿namespace SimpleGame.Graphic.Models.Templates
+﻿namespace SimpleGame.Graphic.Models
 {
     public enum BlockEdge
     {

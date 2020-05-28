@@ -1,9 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using OpenTK;
 
-namespace SimpleGame.GameCore.Worlds
+namespace SimpleGame.GameCore.Worlds.Generators.Environment
 {
     public class TreeGenerator : IEnvironmentGenerator
     {
@@ -47,7 +45,7 @@ namespace SimpleGame.GameCore.Worlds
         {
             const int safeBorder = 2;
             var count = random.Next(maxTreeCountInChunk);
-            for (int treeCount = 0; treeCount < count; treeCount++)
+            for (var treeCount = 0; treeCount < count; treeCount++)
             {
                 var x = random.Next(safeBorder, Chunk.Width - safeBorder);
                 var z = random.Next(safeBorder, Chunk.Length - safeBorder);
@@ -61,25 +59,21 @@ namespace SimpleGame.GameCore.Worlds
                     continue;
                 var position = new Vector3(x, top, z);
                 var tree = GetTree();
-                var noExcess = TryPlaceEnvironment(tree, chunk, position);
+                TryPlaceEnvironment(tree, chunk, position);
             }
         }
         
-        private bool TryPlaceEnvironment(EnvironmentObject obj, Chunk chunk, Vector3 anchor)
+        private static bool TryPlaceEnvironment(EnvironmentObject obj, Chunk chunk, Vector3 anchor)
         {
-            var noExcess = true;
-            foreach (var treePart in obj.Parts)
+            const bool noExcess = true;
+            foreach (var (offset, blockId) in obj.Parts)
             {
-                var offset = treePart.Item1;
-                var blockId = treePart.Item2;
-
                 var x = (int) (offset.X + anchor.X);
                 var y = (int) (offset.Y + anchor.Y);
                 var z = (int) (offset.Z + anchor.Z);
                 
                 var chunkPositionOffset = (x / Chunk.Width, z / Chunk.Length);
-                var positionOffset = new Vector3(x % Chunk.Width, y, z % Chunk.Length);
-                
+
                 if (chunkPositionOffset == (0, 0))
                 {
                     chunk.Map[x, y, z] = blockId;

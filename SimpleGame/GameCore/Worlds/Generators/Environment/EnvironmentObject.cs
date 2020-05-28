@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using OpenTK;
 
-namespace SimpleGame.GameCore.Worlds
+namespace SimpleGame.GameCore.Worlds.Generators.Environment
 {
     public class EnvironmentObject
     {
-        public List<(Vector3, int)> Parts;
+        public readonly List<(Vector3, int)> Parts;
 
         public EnvironmentObject()
         {
