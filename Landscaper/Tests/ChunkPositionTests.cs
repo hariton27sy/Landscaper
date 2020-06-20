@@ -19,7 +19,8 @@ namespace Landscaper.Tests
                     {
                         var worldPosition = new Vector2(x, y);
                         var expected = new Vector2(0, 0);
-                        yield return new TestCaseData(worldPosition, expected).SetName($"World ({x}, {y}) expected in (0, 0) Chunk");
+                        yield return new TestCaseData(worldPosition, expected)
+                            .SetName($"World ({x}, {y}) expected in (0, 0) Chunk");
                     }
                 }
                 for (int x = -Preferences.ChunkRenderRadius; x <= Preferences.ChunkRenderRadius; x++)
@@ -30,7 +31,8 @@ namespace Landscaper.Tests
                         var worldY = y * Chunk.Length;
                         var worldPosition = new Vector2(worldX, worldY);
                         var expected = new Vector2(worldX / Chunk.Width, worldY / Chunk.Length);
-                        yield return new TestCaseData(worldPosition, expected).SetName($"World ({worldX}, {worldY}) expected in Chunk ({worldX / Chunk.Width}, {worldY / Chunk.Length}) of radius {Preferences.ChunkRenderRadius}");
+                        yield return new TestCaseData(worldPosition, expected)
+                            .SetName($"World ({worldX}, {worldY}) expected in Chunk ({worldX / Chunk.Width}, {worldY / Chunk.Length}) of radius {Preferences.ChunkRenderRadius}");
                     }
                 }
             }
@@ -53,7 +55,8 @@ namespace Landscaper.Tests
                     {
                         var worldPosition = new Vector2(x, y);
                         var expected = new Vector2(x * Chunk.Width, y * Chunk.Length);
-                        yield return new TestCaseData(worldPosition, expected).SetName($"Chunk ({x}, {y}) expected in World ({x * Chunk.Width}, {y * Chunk.Length})");
+                        yield return new TestCaseData(worldPosition, expected)
+                            .SetName($"Chunk ({x}, {y}) expected in World ({x * Chunk.Width}, {y * Chunk.Length})");
                     }
                 }
             }
@@ -65,7 +68,5 @@ namespace Landscaper.Tests
             var actual = chunk.InWorldShift();
             Assert.That(actual, Is.EqualTo(expectedChunkPosition));
         }
-        
-        
     }
 }

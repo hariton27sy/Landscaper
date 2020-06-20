@@ -25,9 +25,13 @@ namespace Landscaper.Tests
                 {
                     var position = new Vector2(r, h);
                     var chunk = world.GetChunk(position);
-                    
-                    
-                    Assert.That(chunk.Map[0, PlainTerrainGeneratorMock.Height, 0], Is.EqualTo((int) BlockType.Grass));
+
+                    var x = 0;
+                    var y = PlainTerrainGeneratorMock.Height;
+                    var z = 0;
+                    Assert.That(chunk.Map[x, y, z], 
+                        Is.EqualTo(PlainTerrainGeneratorMock.Block), 
+                        $"In chunk {position} in map at [{x}, {y}, {z}]");
                 }
             }
         }
@@ -36,6 +40,7 @@ namespace Landscaper.Tests
     public class PlainTerrainGeneratorMock : ITerrainGenerator
     {
         public const int Height = 0;
+        public const int Block = (int) BlockType.Grass;
         public Chunk GenerateChunk(Vector2 position)
         {
             var map = new int[Chunk.Width, Chunk.Height, Chunk.Length];
@@ -43,7 +48,7 @@ namespace Landscaper.Tests
             {
                 for (int y = 0; y < Chunk.Length; y++)
                 {
-                    map[x, Height, y] = (int) BlockType.Grass;
+                    map[x, Height, y] = Block;
                 }
             }
 
